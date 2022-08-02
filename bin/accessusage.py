@@ -1,5 +1,5 @@
-import xdusage_v1
-import xdusage_v2
+import accessusage_v1
+import accessusage_v2
 import argparse
 import sys
 
@@ -23,7 +23,7 @@ def remove_argument():
 
 
 list_of_choices = ["1", "2"]
-parser = ArgumentParser(add_help=False, description="Specify the specific version of xdusage. The default version is 2")
+parser = ArgumentParser(add_help=False, description="Specify the specific version of accessusage. The default version is 2")
 parser.add_argument("-av", "--apiversion", default="2", choices=list_of_choices)
 args = parser.parse_args()
 
@@ -33,7 +33,7 @@ for arg in sys.argv:
 
 if args.apiversion == '1':
     remove_argument()
-    xdusage_v1.main()
+    accessusage_v1.main()
 elif args.apiversion == '2':
     remove_argument()
-    xdusage_v2.main()
+    accessusage_v2.main()

@@ -17,7 +17,7 @@ from urllib.error import HTTPError
 # from datetime import datetime
 import datetime
 
-XDUSAGE_CONFIG_FILE = "xdusage_v2.conf"
+XDUSAGE_CONFIG_FILE = "accessusage_v2.conf"
 APIKEY = None
 APIID = None
 resource = None
@@ -770,7 +770,7 @@ def check_sudo():
     """
 
     found = 0
-    result = run_command_line('sudo -l -n | grep xdusage')
+    result = run_command_line('sudo -l -n | grep accessusage')
 
     if len(result) > 0:
         found = 1
@@ -779,8 +779,8 @@ def check_sudo():
         sys.stderr.write("The /etc/sudoers file is not set up correctly.\n")
         if is_root:
             msg = "The /etc/sudoers file needs to contain the following lines in order for non-root users to run " \
-                  "correctly:\t\nDefault!{}/xdusage runas_default=xdusage\t\nDefault!{}/xdusage " \
-                  "env_keep=\"USER\"\t\nALL  ALL=(xdusage) NOPASSWD:{}/xdusage\n".format(install_dir, install_dir,
+                  "correctly:\t\nDefault!{}/accessusage runas_default=accessusage\t\nDefault!{}/accessusage " \
+                  "env_keep=\"USER\"\t\nALL  ALL=(accessusage) NOPASSWD:{}/accessusage\n".format(install_dir, install_dir,
                                                                                      install_dir)
             sys.stderr.write(msg)
             sys.exit()
@@ -791,12 +791,12 @@ def check_sudo():
 
 def setup_conf():
     # Allow a root user to create and setup the missing configuration file.
-    # Check that user xdusage exists, or prompt the admin to create it.
+    # Check that user accessusage exists, or prompt the admin to create it.
     try:
-        pwd.getpwnam("xdusage")
+        pwd.getpwnam("accessusage")
     except KeyError:
         sys.stderr.write(
-            "Required user 'xdusage' does not exist on this system.\nCreate the user and run this script again.\n")
+            "Required user 'accessusage' does not exist on this system.\nCreate the user and run this script again.\n")
         sys.exit()
 
     # Create the empty configuration file in /etc.
@@ -830,9 +830,9 @@ def setup_conf():
         print("Could not close file, {}".format(local_conf_file))
         sys.exit()
 
-    # Change its ownership to root/xdusage
+    # Change its ownership to root/accessusage
     uid = pwd.getpwnam("root").pw_uid
-    gid = grp.getgrnam("xdusage").gr_gid
+    gid = grp.getgrnam("accessusage").gr_gid
 
     try:
         os.chown(local_conf_file, uid, gid)
@@ -1307,7 +1307,7 @@ def check_config():
         print("Could not open/read file, {}".format(conf_file))
         sys.exit()
 
-    # Check ownership of the configuration file is root/xdusage.
+    # Check ownership of the configuration file is root/accessusage.
     sb = os.lstat(conf_file)
     root_uid = pwd.getpwnam("root").pw_uid
     # print("sb uid = {} root uid = {}".format(sb.st_uid, root_uid))
@@ -1315,12 +1315,12 @@ def check_config():
         config_error("Configuration file '{}' must be owned by user 'root'.".format(conf_file), num_parameters=2)
         # pass
     try:
-        xdusage_gid = grp.getgrnam("xdusage").gr_gid
+        xdusage_gid = grp.getgrnam("accessusage").gr_gid
     except KeyError:
         xdusage_gid = -1
-    # print("sb gid = {} xdusage gid = {}".format(sb.st_gid, xdusage_gid))
+    # print("sb gid = {} accessusage gid = {}".format(sb.st_gid, xdusage_gid))
     if sb.st_gid != xdusage_gid:
-        config_error("Configuration file '{}' must be owned by group 'xdusage'.".format(conf_file), num_parameters=2)
+        config_error("Configuration file '{}' must be owned by group 'accessusage'.".format(conf_file), num_parameters=2)
         # pass
     # Check that the configuration file has the correct permissions.
     # mode = stat.S_IMODE(sb.st_mode)
@@ -1401,7 +1401,7 @@ def check_config():
 
 
 def version():
-    print("xdusage version {}".format('1.0'))
+    print("accessusage version {}".format('1.0'))
     exit(1)
 
 
@@ -1440,7 +1440,7 @@ def main():
     # print('command line = {}'.format(command_line))
     if is_root:
         sys.stderr.write("You are running this script as root.\nAs an administrator, you will be given directions to "
-                         "set up xdusage to run on this machine, if needed.\nWhere possible, you will also be given "
+                         "set up accessusage to run on this machine, if needed.\nWhere possible, you will also be given "
                          "instructions to correct any errors that are detected.\n\n")
 
     # Root needs to check that the sodoers file is set up correctly,
@@ -1456,7 +1456,7 @@ def main():
         # This script needs to be run by sudo to provide a reasonably-
         # assured user ID with access to the configuration file.
         # Re-run the script using sudo.
-        sys.argv.insert(1, '{}/xdusage'.format(install_dir))
+        sys.argv.insert(1, '{}/accessusage'.format(install_dir))
         sys.argv.insert(1, "sudo")
         try:
             command_xdusage = " ".join(sys.argv[1:])

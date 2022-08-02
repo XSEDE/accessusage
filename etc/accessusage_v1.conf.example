@@ -1,10 +1,10 @@
-# example xdusage_v2.conf file
+# example accessusage_v1.conf file
 # put this in one of the following:
-#  INSTALL_DIR/etc/xdusage_v2.conf   (INSTALL_DIR is where xdusage lives)
-#  /etc/xdusage_v2.conf
-#  /var/secrets/xdusage_v2.conf
+#  INSTALL_DIR/etc/accessusage_v1.conf   (INSTALL_DIR is where accessusage lives)
+#  /etc/accessusage_v1.conf
+#  /var/secrets/accessusage_v1.conf
 #
-# This file should be owned by root:xdusage (change group to your equivalent)
+# This file should be owned by root:accessusage (change group to your equivalent)
 # This file should be mode 0640 (NEVER world-readable)
 #
 
