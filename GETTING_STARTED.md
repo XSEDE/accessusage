@@ -32,7 +32,7 @@ uid=1000(cyoun) gid=1000(cyoun) groups=1000(cyoun),10(wheel),48(apache),996(vbox
 $ groups
 cyoun wheel apache vboxsf accessusage
 
-# If you can't see the "xdusage" group in the group list for your current user, 
+# If you can't see the "accessusage" group in the group list for your current user, 
 # run the commandline below for the change to take effect.
 # As the other way, you would need to log in again.
 $ su - $USER
