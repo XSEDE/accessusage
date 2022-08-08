@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ ! -e VERSION ]; then
+  echo "You may be in the wrong directory."
+  echo "Run tar from the package root."
+  exit 1
+fi
+
+HERE=`pwd`
+PACKAGES=$HERE/tmp_packages
+echo "** SIGNING packages in $PACKAGES **"
+
+cd $PACKAGES
+
+TARS=$(find . -type f -name \*.tgz -or -name \*.tar.gz)
+for i in $TARS;do
+   CMD="gpg --output $i.sig --detach-sig $i"
+   echo "Executing: $CMD"
+   $CMD
+done
+
+RPMS=$(find *.rpm -type f)
+for i in $RPMS;do
+   CMD="rpm --addsign $i"
+   echo "Executing: $CMD"
+   $CMD
+done

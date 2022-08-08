@@ -1,0 +1,49 @@
+#!/bin/sh
+
+if [ ! -e VERSION ]; then
+  echo "You may be in the wrong directory."
+  echo "Run tar from the package root."
+  exit 1
+fi
+
+PKG=accessusage
+VER=$(cat VERSION)
+REL=$(cat RELEASE)
+
+HERE=`pwd`
+
+BUILDROOT="tmp_build"
+TARDIR="$PKG-$VER"
+TARPATH="$BUILDROOT/$TARDIR"
+
+if [ -e $TARPATH ]; then
+  echo "Previous '$TARPATH/' directory found, delete it first"
+  exit 1
+fi
+
+mkdir -p $TARPATH || exit 1
+mkdir $TARPATH/bin
+mkdir $TARPATH/etc
+mkdir $TARPATH/docs
+mkdir $TARPATH/sbin
+
+cp -p VERSION RELEASE $TARPATH/
+
+FILES=$(find bin etc -type f ! -path \*\.svn\*)
+FILES="$FILES sbin/$PKG.spec.in sbin/build-rpms GETTING_STARTED.md"
+for i in $FILES;do
+  iout=$(echo $i | sed 's/\.in$//')
+  sed -e "s,%VER%,$VER,g" \
+      -e "s,%REL%,$REL,g" \
+      $i \
+      >$TARPATH/$iout
+done
+#(cd $TARPATH; ln -s docs/GETTING_STARTED.md)
+#man $TARPATH/docs/$PKG.1 >$TARPATH/docs/$PKG.manpage
+chmod +x $TARPATH/sbin/build-rpms
+chmod +x $TARPATH/bin/*
+
+cd $BUILDROOT
+tar -czf $PKG-$VER-$REL.tgz $TARDIR
+
+cd $HERE

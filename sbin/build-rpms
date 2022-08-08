@@ -1,0 +1,13 @@
+#!/bin/bash
+
+PKG=accessusage
+mkdir -p tmp_rpm/$PKG_rpmtopdir
+mkdir -p tmp_rpm/$PKG_rpmtopdir/BUILD
+mkdir -p tmp_rpm/$PKG_rpmtopdir/SOURCES
+mkdir -p tmp_rpm/$PKG_rpmtopdir/BUILDROOT
+mkdir -p tmp_rpm/$PKG_rpmtopdir/RPMS
+mkdir -p tmp_rpm/$PKG_rpmtopdir/SPECS
+mkdir -p tmp_rpm/$PKG_rpmtopdir/SRPMS
+cp $PKG-%VER%-%REL%.tgz tmp_rpm/$PKG_rpmtopdir/SOURCES
+#rpmbuild --quiet --define "_topdir ${PWD}/tmp_rpm/$PKG_rpmtopdir" -ba ./$PKG-%VER%/sbin/$PKG.spec
+rpmbuild --define "_prefix /usr" --define "_arch x86_64" --define "_topdir ${PWD}/tmp_rpm/$PKG_rpmtopdir" --ba --target x86_64-redhat-linux --clean ./$PKG-%VER%/sbin/$PKG.spec --verbose

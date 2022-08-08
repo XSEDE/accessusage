@@ -1,0 +1,67 @@
+#!/bin/sh
+
+if [ ! -e VERSION ]; then
+  echo "You may not be in the right place to run upload"
+  echo "Please run from the root of the package"
+  exit 1
+fi
+
+PKG=accessusage
+VER=$(cat VERSION)
+REL=$(cat RELEASE)
+
+DEFAULT_FILE_PERMS="664"
+DEFAULT_DIR_PERMS="775"
+REPO_HOSTNAME=software.xsede.org
+REPO_SOFTWARE=/home/xsedesig/incoming/
+DEV_PKG_BASE=/local/software.xsede.org/development/$PKG
+DEV_RPM_BASE=/local/software.xsede.org/development/repo
+PKG_SUBDIR=$PKG-$VER-$REL
+
+HERE=`pwd`
+PACKAGES=$HERE/tmp_packages
+
+##################################################################################
+
+while getopts "hu:" opt; do
+  case $opt in
+    u) REPO_HOSTNAME="$OPTARG@$REPO_HOSTNAME"
+       ;;
+    h) 
+      echo $USAGE 
+      exit 0
+      ;;
+    \?)
+      echo $USAGE >&2
+      exit 1
+      ;;
+  esac
+done
+
+###########################################
+# Upload to Development TAR repository
+###########################################
+echo "** Uploading to Development TAR distribution location https://software.xsede.org/development/$PKG/"
+
+ssh $REPO_HOSTNAME "mkdir -m $DEFAULT_DIR_PERMS $DEV_PKG_BASE/$PKG_SUBDIR"
+
+cd $PACKAGES
+chmod $DEFAULT_FILE_PERMS *.tgz *.tgz.sig
+scp -p *.tgz *.tgz.sig GETTING_STARTED.md $REPO_HOSTNAME:$DEV_PKG_BASE/$PKG_SUBDIR/
+cd $HERE
+
+ssh $REPO_HOSTNAME "cd $DEV_PKG_BASE; rm -f latest; ln -s $PKG_SUBDIR latest"
+echo
+
+###########################################
+# Upload to Development RPM repositories
+###########################################
+echo "** Uploading to Development YUM repositories https://software.xsede.org/development/repo/"
+
+cd $PACKAGES
+scp -p dist/$PKG-$VER-$REL.noarch.rpm xsedesig@$REPO:$REPO_SOFTWARE/
+ssh -l xsedesig $REPO "cd /home/xsedesig; ./repobin/rpm-sign.exp \`cat /home/xsedesig/pass\` ./incoming/$PKG-$VER-$REL.noarch.rpm"
+
+ssh -l xsedesig $REPO "\$HOME/repobin/copy.sh $PKG-$VER-$REL.noarch.rpm"
+ssh -l xsedesig $REPO "\$HOME/repobin/createrepos.sh development"
+cd $HERE
