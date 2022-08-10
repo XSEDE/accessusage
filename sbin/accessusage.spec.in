@@ -66,8 +66,8 @@ cp -p etc/accessusage_v2.conf.example ${DESTDIR}/etc/
 %post
 
 #clean up relocation problems
-sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.modules.example
-sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.sudoers.example
+#sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.modules.example
+#sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.sudoers.example
 
 
 
