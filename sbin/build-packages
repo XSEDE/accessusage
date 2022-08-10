@@ -20,6 +20,7 @@ mkdir $PACKAGES
 cp -p tmp_build/tmp_rpm/$PKG_rpmtopdir/RPMS/noarch/$PKG-$VER-$REL.noarch.rpm $PACKAGES/
 cp -p tmp_build/tmp_rpm/$PKG_rpmtopdir/SRPMS/$PKG-$VER-$REL.src.rpm $PACKAGES/
 cp -p tmp_build/$PKG-$VER-$REL.tgz $PACKAGES/
+cp -p GETTING_STARTED.md $PACKAGES/
 (cd $PACKAGES;tar --strip-components 2 -xzf $PKG-$VER-$REL.tgz $PKG-$VER/GETTING_STARTED.md )
 
 echo "** Results in $PACKAGES:"
