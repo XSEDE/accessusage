@@ -926,16 +926,20 @@ def is_authorized():
         }
     )
 
-    resp = urlopen(ua)
+    resp = None
+    try:
+      resp = urlopen(ua)
+    except HTTPError as h:
+      response = None
     # print('is authorized = {} {}'.format(url, resp.read().decode('utf-8')))
 
-    if resp.getcode() != 200:
+    if resp is None or resp.getcode() != 200:
         if is_root:
             message = "This script needs to be authorized with the XDCDB-API. \nAn API-KEY already exists in the " \
                       "configuration file ({}). \nIf you still have the HASH that was generated with this key \nyou " \
-                      "can use it to register xdusage with the API. \nOtherwise, you will need to enter the new " \
+                      "can use it to register accessusage with the API. \nOtherwise, you will need to enter the new " \
                       "API_KEY into the configuration file. \nIn either case, send the following e-mail to " \
-                      "help\@xsede.org to register with the hash and key. \nSubject: XDCDB API-KEY installation " \
+                      "help@xsede.org to register with the hash and key. \nSubject: XDCDB API-KEY installation " \
                       "request \nPlease install the following HASH for agent xdusage on resource '{}'. \n<Replace " \
                       "this with the HASH you are using>".format(conf_file, APIID)
             sys.stderr.write(message)
@@ -944,7 +948,8 @@ def is_authorized():
                 "xdusage is not authorized to query the XDCDB-API.\nPlease contact your system administrator.\n")
 
         # Show full error message in case it is something other than authorization.
-        print("Failure: {} returned erroneous status: {}".format(url, resp.read().decode('utf-8')))
+        if resp is not None:
+            print("Failure: {} returned erroneous status: {}".format(url, resp.read().decode('utf-8')))
         sys.exit()
 
 
