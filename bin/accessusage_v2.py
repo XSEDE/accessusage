@@ -699,7 +699,7 @@ def fmt_datetime(dt):
         return None
 
     # $dt = ~ s /-\d\d$//;
-    dt = re.sub('-\d\d', '', dt)
+    dt = re.sub('-\d\d$', '', dt)
     # $dt =~ s/ /@/;
     dt = re.sub(' ', '@', dt)
     return dt
