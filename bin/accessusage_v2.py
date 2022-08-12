@@ -575,7 +575,7 @@ def show_project(project):
                 return 0
         except KeyError:
             return 0
-        amt = rr['charges']
+        amt = float(rr['charges'])
 
         if amt == 0 and options.zero_projects:
             return 0
@@ -585,7 +585,7 @@ def show_project(project):
             rr['end_date'],
             fmt_amount(float(rr['allocation'])),
             fmt_amount(float(rr['balance'])),
-            fmt_amount(float(amt)),
+            fmt_amount(amt),
             x)
     any1 = 0
     for a1 in a:
