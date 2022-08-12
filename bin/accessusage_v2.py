@@ -948,6 +948,11 @@ def is_authorized():
 
 
 def json_get(url):
+    global DEBUG
+
+    if DEBUG:
+        print(url)
+
     # perform a request to a URL that returns JSON
     # returns JSON if successful
     # dies if there's an error, printing diagnostic information to
