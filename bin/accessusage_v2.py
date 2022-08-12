@@ -671,7 +671,7 @@ def show_project(project):
 def show_amt(label, amt):
     # my($label, $amt) = @_;
     if amt:
-        amt = fmt_amount(amt)
+        amt = fmt_amount(float(amt))
     else:
         amt = None
     print(" {}={}".format(label, amt), end='')
@@ -848,8 +848,6 @@ def setup_conf():
 
 
 def fmt_amount(amt):
-    # my($amt) = shift;
-
     if amt == 0:
         return '0'
     n = 2
@@ -863,34 +861,10 @@ def fmt_amount(amt):
         n += 1
         x = float("%.{}f".format(n) % amt)
     # $x =~ s/\.0*$//;
-    x = re.sub('\.0*', '', str(x))
     # $x = commas($x) unless (option_flag('nc'));
     if not options.no_commas:
-        x = commas(x)
-
-    return x
-
-
-def commas(x):
-    """
-    # I got this from http://forrst.com/posts/Numbers_with_Commas_Separating_the_Thousands_Pe-CLe
-    :param x:
-    :return:
-    """
-    # my($x) = shift;
-    neg = 0
-    # if ($x =~ / ^ - /)
-    if re.match('^-', x):
-        neg = 1
-        # x = ~ s / ^ - //;
-        x = re.sub('^-', '', x)
-
-    # $x =~ s/\G(\d{1,3})(?=(?:\d\d\d)+(?:\.|$))/$1,/g;
-    # x = re.sub('(\d{1,3})(?=(?:\d\d\d)+(?:\.|$))', '$1,', x)
-    x = format(int(x), ',d')
-    # $x = "-" . "$x" if $neg;
-    if neg:
-        x = "-{}".format(x)
+        x = "{:,}".format(x)
+    x = re.sub('\.0*$', '', str(x))
 
     return x
 
