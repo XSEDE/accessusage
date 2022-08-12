@@ -628,7 +628,7 @@ def show_project(project):
             print(" portal={}".format(username), end='')
         if a1['account_state'] != 'active':
             print(" status=inactive", end='')
-        print(" usage={} {}".format(fmt_amount(amt if amt else 0), x))
+        print(" usage={} {}".format(fmt_amount(float(amt) if amt else 0), x))
 
         for x in j:
             print("      job", end='')
@@ -1440,7 +1440,7 @@ def main():
         # This script needs to be run by sudo to provide a reasonably-
         # assured user ID with access to the configuration file.
         # Re-run the script using sudo.
-        sys.argv.insert(1, '{}/accessusage.py'.format(install_dir))
+        sys.argv.insert(1, '{}/accessusage'.format(install_dir))
         sys.argv.insert(1, "sudo")
         try:
             command_xdusage = " ".join(sys.argv[1:])
