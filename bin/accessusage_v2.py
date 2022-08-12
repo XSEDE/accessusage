@@ -613,7 +613,7 @@ def show_project(project):
         if amt == 0 and options.zero_accounts:
             continue
         if not any1:
-            print("Project: {}".format(project['charge_number']), end='')
+            print("Project: {}".format(project['grant_number']), end='')
             print("/{}".format(project['resource_name']), end='')
             if project['project_state'] != 'active':
                 print(" status=inactive", end='')
