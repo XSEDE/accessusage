@@ -547,7 +547,7 @@ def show_project(project):
     if sdate or edate2:
         x = get_usage_by_dates(project['project_id'], project['resource_id'])
         if x['su_used']:
-            amt = 1
+            amt = float(x['su_used'])
         else:
             amt = 0
         if amt == 0 and options.zero_projects:
