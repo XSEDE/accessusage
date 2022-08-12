@@ -790,16 +790,21 @@ def check_sudo():
             sys.exit()
 
 
-def setup_conf():
-    # Allow a root user to create and setup the missing configuration file.
+def check_user():
     # Check that user accessusage exists, or prompt the admin to create it.
     try:
         pwd.getpwnam("accessusage")
     except KeyError:
-        sys.stderr.write(
-            "Required user 'accessusage' does not exist on this system.\nCreate the user and run this script again.\n")
+        sys.stderr.write("Required user 'accessusage' does not exist on this system.\n")
+        if is_root:
+            sys.stderr.write("Create the user and run this script again.\n")
+        else:
+            sys.stderr.write( "Please contact your system administrator.\n")
         sys.exit()
 
+
+def setup_conf():
+    # Allow a root user to create and setup the missing configuration file.
     # Create the empty configuration file in /etc.
     hostname = socket.gethostname()
     local_conf_file = "/etc/{}".format(XDUSAGE_CONFIG_FILE)
@@ -941,7 +946,7 @@ def is_authorized():
                       "API_KEY into the configuration file. \nIn either case, send the following e-mail to " \
                       "help@xsede.org to register with the hash and key. \nSubject: XDCDB API-KEY installation " \
                       "request \nPlease install the following HASH for agent xdusage on resource '{}'. \n<Replace " \
-                      "this with the HASH you are using>".format(conf_file, APIID)
+                      "this with the HASH you are using>\n".format(conf_file, APIID)
             sys.stderr.write(message)
         else:
             sys.stderr.write(
@@ -1406,6 +1411,7 @@ def main():
     global sdate, edate, edate2
     global DEBUG
 
+
     # find out where this script is running from
     # eliminates the need to configure an install dir
     install_dir = path.dirname(path.abspath(__file__))
@@ -1434,6 +1440,7 @@ def main():
 
     # Root needs to check that the sodoers file is set up correctly,
     # but doesn't need to run with sudo.
+    check_user()
     logname = ''
     if is_root:
         check_sudo()
