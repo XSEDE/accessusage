@@ -20,6 +20,7 @@ import datetime
 XDUSAGE_CONFIG_FILE = "accessusage_v2.conf"
 APIKEY = None
 APIID = None
+DEBUG = False
 resource = None
 admin_names = []
 conf_file = None
@@ -948,17 +949,17 @@ def is_authorized():
 
 
 def json_get(url):
-    global DEBUG
-
-    if DEBUG:
-        print(url)
-
     # perform a request to a URL that returns JSON
     # returns JSON if successful
     # dies if there's an error, printing diagnostic information to
     # stderr.
     # error is:  non-200 result code, or result is not JSON.
     # using LWP since it's available by default in most cases
+    global DEBUG
+
+    if DEBUG:
+        print(url)
+
     ua = Request(
         url,
         headers={
@@ -1190,6 +1191,8 @@ def get_projects():
     current user by default
     :return:
     """
+    global user
+
     if not user:
         return []
 
@@ -1396,6 +1399,8 @@ def main():
     global users
     global plist
     global sdate, edate, edate2
+    global DEBUG
+
 
     # find out where this script is running from
     # eliminates the need to configure an install dir
