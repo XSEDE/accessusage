@@ -88,7 +88,7 @@ def parse_args():
         help="<username|Last name>",
         type=str)
     aparse.add_argument(
-        "-up", "--portal_usernames", nargs='*',
+        "-P", "--portal_usernames", nargs='*',
         help="<portal-username>",
         type=str)
     aparse.add_argument(
@@ -1401,12 +1401,12 @@ def main():
     global sdate, edate, edate2
     global DEBUG
 
-
+    print("in accessusage_v2\n")
     # find out where this script is running from
     # eliminates the need to configure an install dir
     install_dir = path.dirname(path.abspath(__file__))
     # print('install dir = {}'.format(install_dir))
-    me = sys.argv[0].split('/')[-1]
+    # me = sys.argv[0].split('/')[-1]
     # print('me = {}'.format(me))
 
     # Perl always has "." on the end of @INC, and it causes problems if the
@@ -1419,7 +1419,8 @@ def main():
     # will be given directions to correct errors, where possible.
     # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
     is_root = (pwd.getpwuid(os.getuid())[0] == "root")
-    # print('is root = {}'.format(is_root))
+    print('is root = {}'.format(is_root))
+    print('uid = {}'.format(pwd.getpwuid(os.getuid())[0]))
     command_line = " ".join(sys.argv[1:])
     # print('command line = {}'.format(command_line))
     if is_root:
@@ -1441,15 +1442,19 @@ def main():
         # assured user ID with access to the configuration file.
         # Re-run the script using sudo.
         sys.argv.insert(1, '{}/accessusage'.format(install_dir))
-        sys.argv.insert(1, "sudo")
+        #sys.argv.insert(1, "sudo")
         try:
             command_xdusage = " ".join(sys.argv[1:])
-            # print('command xdusage = {}'.format(command_xdusage))
-            if os.system(command_xdusage) != 0:
+            print('command xdusage = {}'.format(command_xdusage))
+            #if os.exec(command_xdusage) != 0:
+            if os.execvp("/usr/bin/sudo", sys.argv[1:]) != 0:
+            #subcommand = subprocess.run(command_xdusage)
+            #print("command returncode is {}".format(subcommand.returncode))
+            #if subcommand.returncode != 0:
                 sys.stderr.write("Couldn't exect sudo: \n")
-                sys.exit()
-        except:
-            print("command does not work")
+            #    sys.exit()
+        except Exception as e:
+            print("command does not work: {}".format(e))
             sys.exit()
 
     else:
@@ -1480,7 +1485,7 @@ def main():
     # print('resource list = {}'.format(resources))
 
     users = get_users()
-    # print('user list = {}'.format(users))
+    print('user list = {}'.format(users))
     plist = options.projects
     # print('project list = {}'.format(plist))
     sdate, edate, edate2 = get_dates()

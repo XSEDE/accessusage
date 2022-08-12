@@ -1426,7 +1426,7 @@ def main():
         # This script needs to be run by sudo to provide a reasonably-
         # assured user ID with access to the configuration file.
         # Re-run the script using sudo.
-        sys.argv.insert(1, '{}/accessusage.py'.format(install_dir))
+        sys.argv.insert(1, '{}/accessusage'.format(install_dir))
         sys.argv.insert(1, "sudo")
         try:
             command_xdusage = " ".join(sys.argv[1:])

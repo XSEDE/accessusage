@@ -46,22 +46,22 @@ $ sudo chmod 640 -R ./etc/*.conf
 
 ### 7. Test accessusage version 2
 ```
-$ python3 ./bin/accessusage.py -h
-$ python3 ./bin/accessusage.py
-$ python3 ./bin/accessusage.py -p TG-MCB190139
-$ python3 ./bin/accessusage.py -up neesittg
-$ python3 ./bin/accessusage.py -r expanse
-$ python3 ./bin/accessusage.py -s 2021-06-28 -e 2021-10-01
-$ python3 ./bin/accessusage.py -r expanse -ip
+$ ./bin/accessusage -h
+$ ./bin/accessusage
+$ ./bin/accessusage -p TG-MCB190139
+$ ./bin/accessusage -up neesittg
+$ ./bin/accessusage -r expanse
+$ ./bin/accessusage -s 2021-06-28 -e 2021-10-01
+$ ./bin/accessusage -r expanse -ip
 ```
 
 ### 8. Test accessusage version 1
 ```
-$ python3 ./bin/accessusage.py -av 1 -h
-$ python3 ./bin/accessusage.py -av 1
-$ python3 ./bin/accessusage.py -av 1 -p TG-MCB190139
-$ python3 ./bin/accessusage.py -av 1 -up cyoun
-$ python3 ./bin/accessusage.py -av 1 -r expanse
-$ python3 ./bin/accessusage.py -av 1 -s 2021-06-28 -e 2021-10-01
-$ python3 ./bin/accessusage.py -av 1 -r expanse -ip
+$ ./bin/accessusage -av 1 -h
+$ ./bin/accessusage -av 1
+$ ./bin/accessusage -av 1 -p TG-MCB190139
+$ ./bin/accessusage -av 1 -up cyoun
+$ ./bin/accessusage -av 1 -r expanse
+$ ./bin/accessusage -av 1 -s 2021-06-28 -e 2021-10-01
+$ ./bin/accessusage -av 1 -r expanse -ip
 ```

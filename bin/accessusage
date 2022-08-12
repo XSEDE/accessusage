@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import accessusage_v1
 import accessusage_v2
 import argparse
