@@ -488,7 +488,7 @@ def get_cdv_on_request_resource(request_resource_id, person_id):
     # construct a rest url and fetch it
     # don't forget to uri escape these things in case one has funny
     # characters
-    url = "{}/xxdusage/v2/credits_debits/by_request_resource/{}".format(
+    url = "{}/xdusage/v2/credits_debits/by_request_resource/{}".format(
         rest_url, request_resource_id)
     if person_id:
         url += "?person_id={}".format(person_id)
