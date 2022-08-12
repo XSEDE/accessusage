@@ -1279,7 +1279,7 @@ def check_config():
     # Give the administrator directions to set up the script.
     if not conf_file:
         if is_root:
-            sys.stderr.write("The configuration file could not be located in:\n")
+            sys.stderr.write("The configuration file could not be located in:\n  ")
             sys.stderr.write("\n  ".join(conf_file_list))
             sys.stderr.write("\n")
             setup_conf()
