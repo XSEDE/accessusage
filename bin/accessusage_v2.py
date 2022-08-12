@@ -1419,8 +1419,8 @@ def main():
     # will be given directions to correct errors, where possible.
     # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
     is_root = (pwd.getpwuid(os.getuid())[0] == "root")
-    print('is root = {}'.format(is_root))
-    print('uid = {}'.format(pwd.getpwuid(os.getuid())[0]))
+    #print('is root = {}'.format(is_root))
+    #print('uid = {}'.format(pwd.getpwuid(os.getuid())[0]))
     command_line = " ".join(sys.argv[1:])
     # print('command line = {}'.format(command_line))
     if is_root:
@@ -1444,15 +1444,11 @@ def main():
         sys.argv.insert(1, '{}/accessusage'.format(install_dir))
         #sys.argv.insert(1, "sudo")
         try:
-            command_xdusage = " ".join(sys.argv[1:])
-            print('command xdusage = {}'.format(command_xdusage))
-            #if os.exec(command_xdusage) != 0:
-            if os.execvp("/usr/bin/sudo", sys.argv[1:]) != 0:
-            #subcommand = subprocess.run(command_xdusage)
-            #print("command returncode is {}".format(subcommand.returncode))
-            #if subcommand.returncode != 0:
-                sys.stderr.write("Couldn't exect sudo: \n")
-            #    sys.exit()
+            #print('command args = {}'.format(sys.argv[1:]))
+            if os.geteuid() != 0:
+                #The extra "sudo" in thesecond parameter is required because 
+                #Python doesn't automatically set $0 in the new process.
+                os.execvp("sudo", ["sudo"] + sys.argv[1:])
         except Exception as e:
             print("command does not work: {}".format(e))
             sys.exit()
