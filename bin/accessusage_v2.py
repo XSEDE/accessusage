@@ -1401,7 +1401,6 @@ def main():
     global sdate, edate, edate2
     global DEBUG
 
-    print("in accessusage_v2\n")
     # find out where this script is running from
     # eliminates the need to configure an install dir
     install_dir = path.dirname(path.abspath(__file__))
@@ -1481,7 +1480,7 @@ def main():
     # print('resource list = {}'.format(resources))
 
     users = get_users()
-    print('user list = {}'.format(users))
+    # print('user list = {}'.format(users))
     plist = options.projects
     # print('project list = {}'.format(plist))
     sdate, edate, edate2 = get_dates()
