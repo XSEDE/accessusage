@@ -547,7 +547,7 @@ def show_project(project):
     if sdate or edate2:
         x = get_usage_by_dates(project['project_id'], project['resource_id'])
         if x['su_used']:
-            amt = 1
+            amt = float(x['su_used'])
         else:
             amt = 0
         if amt == 0 and options.zero_projects:
@@ -575,7 +575,7 @@ def show_project(project):
                 return 0
         except KeyError:
             return 0
-        amt = rr['charges']
+        amt = float(rr['charges'])
 
         if amt == 0 and options.zero_projects:
             return 0
@@ -585,7 +585,7 @@ def show_project(project):
             rr['end_date'],
             fmt_amount(float(rr['allocation'])),
             fmt_amount(float(rr['balance'])),
-            fmt_amount(float(amt)),
+            fmt_amount(amt),
             x)
     any1 = 0
     for a1 in a:
