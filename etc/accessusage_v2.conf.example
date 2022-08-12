@@ -14,7 +14,7 @@ resource_name     = <YOUR_XDCDB_RESOURCE_NAME>
 api_id            = <YOUR_XDCDB_RESOURCE_NAME>
 api_key           = <YOUR_API_KEY>
 
-rest_url_base     = https://xsede-xdcdb-api.xsede.org/
+rest_url_base     = https://allocations-api.access-ci.org/acdb
 
 # admins who can impersonate other users; one admin per line
 admin_name = ssakai
