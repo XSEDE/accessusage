@@ -409,7 +409,7 @@ def show_project(project):
         ux = "Usage Period: {}{}\n Usage={} {}".format(
             "{}/".format(s) if s else "thru ",
             "{}".format(e) if e else today,
-            fmt_amount(amt),
+            util.fmt_amount(amt, options.no_commas),
             x)
     else:
         alloc = get_allocation(project['account_id'], project['resource_id'], options.previous_allocation)
@@ -422,16 +422,16 @@ def show_project(project):
         ux = "Allocation: {}/{}\n Total={} Remaining={} Usage={} {}".format(
             alloc['alloc_start'],
             alloc['alloc_end'],
-            fmt_amount(float(alloc['su_allocated'])),
-            fmt_amount(float(alloc['su_remaining'])),
-            fmt_amount(float(amt)),
+            util.fmt_amount(float(alloc['su_allocated']), options.no_commas),
+            util.fmt_amount(float(alloc['su_remaining']), options.no_commas),
+            util.fmt_amount(float(amt), options.no_commas),
             x)
     any1 = 0
     for a1 in a:
         is_pi = a1['is_pi']
         w = "PI" if is_pi else "  "
         username = a1['portal_username']
-        name = fmt_name(a1['first_name'], a1['middle_name'], a1['last_name'])
+        name = util.fmt_name(a1['first_name'], a1['middle_name'], a1['last_name'])
 
         if sdate or edate2:
             x = get_usage_by_dates(project['account_id'], project['resource_id'],
@@ -458,7 +458,7 @@ def show_project(project):
                 print(" status=inactive", end='')
             print("")
             print("PI: {}".format(
-                fmt_name(project['pi_first_name'], project['pi_middle_name'], project['pi_last_name'])))
+                util.fmt_name(project['pi_first_name'], project['pi_middle_name'], project['pi_last_name'])))
             print("{}".format(ux))
             any1 = 1
 
@@ -467,7 +467,7 @@ def show_project(project):
             print(" portal={}".format(username), end='')
         if a1['acct_state'] != 'active':
             print(" status=inactive", end='')
-        print(" usage={} {}".format(fmt_amount(amt if amt else 0), x))
+        print(" usage={} {}".format(util.fmt_amount(amt if amt else 0, options.no_commas), x))
 
         for x in j:
             print("      job", end='')
@@ -475,9 +475,9 @@ def show_project(project):
             show_value("id", id)
             show_value("jobname", x['jobname'])
             show_value("resource", x['job_resource'])
-            show_value("submit", fmt_datetime(x['submit_time']))
-            show_value("start", fmt_datetime(x['start_time']))
-            show_value("end", fmt_datetime(x['end_time']))
+            show_value("submit", util.fmt_datetime(x['submit_time']))
+            show_value("start", util.fmt_datetime(x['start_time']))
+            show_value("end", util.fmt_datetime(x['end_time']))
             show_amt("memory", x['memory'])
             show_value("nodecount", x['nodecount'])
             show_value("processors", x['processors'])
@@ -497,8 +497,8 @@ def show_project(project):
         for x in cd:
             print("     {}".format(x['type']), end='')
             print(" resource={}".format(x['site_resource_name']), end='')
-            print(" date={}".format(fmt_datetime(x['charge_date'])), end='')
-            print(" amount={}".format(fmt_amount(abs(x['amount']))), end='')
+            print(" date={}".format(util.fmt_datetime(x['charge_date'])), end='')
+            print(" amount={}".format(util.fmt_amount(abs(x['amount']), options.no_commas)), end='')
             print("")
 
     if any1:
@@ -509,7 +509,7 @@ def show_project(project):
 def show_amt(label, amt):
     # my($label, $amt) = @_;
     if amt:
-        amt = fmt_amount(amt)
+        amt = util.fmt_amount(amt, options.no_commas)
     else:
         amt = None
     print(" {}={}".format(label, amt), end='')
@@ -522,24 +522,6 @@ def show_value(label, value):
     print(" {}={}".format(label, value), end='')
 
 
-def fmt_name(first_name, middle_name, last_name):
-    # my($first_name, $middle_name, $last_name) = @_;
-    name = "{} {}".format(last_name, first_name)
-    if middle_name:
-        name += " {}".format(middle_name)
-    return name
-
-
-def fmt_datetime(dt):
-    # my($dt) = shift;
-    if not dt:
-        return None
-
-    # $dt = ~ s /-\d\d$//;
-    dt = re.sub('-\d\d', '', dt)
-    # $dt =~ s/ /@/;
-    dt = re.sub(' ', '@', dt)
-    return dt
 
 
 def get_dates():
@@ -579,54 +561,6 @@ def get_dates():
     return local_sdate, local_edate, local_edate2
 
 
-
-
-def fmt_amount(amt):
-    # my($amt) = shift;
-
-    if amt == 0:
-        return '0'
-    n = 2
-    if abs(amt) >= 10000:
-        n = 0
-    elif abs(amt) >= 1000:
-        n = 1
-
-    x = float("%.{}f".format(n) % amt)
-    while x == 0:
-        n += 1
-        x = float("%.{}f".format(n) % amt)
-    # $x =~ s/\.0*$//;
-    x = re.sub('\.0*', '', str(x))
-    # $x = commas($x) unless (option_flag('nc'));
-    if not options.no_commas:
-        x = commas(x)
-
-    return x
-
-
-def commas(x):
-    """
-    # I got this from http://forrst.com/posts/Numbers_with_Commas_Separating_the_Thousands_Pe-CLe
-    :param x:
-    :return:
-    """
-    # my($x) = shift;
-    neg = 0
-    # if ($x =~ / ^ - /)
-    if re.match('^-', x):
-        neg = 1
-        # x = ~ s / ^ - //;
-        x = re.sub('^-', '', x)
-
-    # $x =~ s/\G(\d{1,3})(?=(?:\d\d\d)+(?:\.|$))/$1,/g;
-    # x = re.sub('(\d{1,3})(?=(?:\d\d\d)+(?:\.|$))', '$1,', x)
-    x = format(int(x), ',d')
-    # $x = "-" . "$x" if $neg;
-    if neg:
-        x = "-{}".format(x)
-
-    return x
 
 
 def error(msg):

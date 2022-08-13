@@ -423,7 +423,7 @@ def show_project(project):
         ux = "Usage Period: {}{}\n Usage={} {}".format(
             "{}/".format(s) if s else "thru ",
             "{}".format(e) if e else today,
-            fmt_amount(amt),
+            util.fmt_amount(amt, options.no_commas),
             x)
     else:
         rr = get_request_resource(project['project_id'], project['resource_id'], options.previous_allocation)
@@ -442,16 +442,16 @@ def show_project(project):
         ux = "Allocation: {}/{}\n Total={} Remaining={} Usage={} {}".format(
             rr['start_date'],
             rr['end_date'],
-            fmt_amount(float(rr['allocation'])),
-            fmt_amount(float(rr['balance'])),
-            fmt_amount(amt),
+            util.fmt_amount(float(rr['allocation']), options.no_commas),
+            util.fmt_amount(float(rr['balance']), options.no_commas),
+            util.fmt_amount(amt, options.no_commas),
             x)
     any1 = 0
     for a1 in a:
         is_pi = a1['is_pi']
         w = "PI" if is_pi else "  "
         username = a1['portal_username']
-        name = fmt_name(a1['first_name'], a1['middle_name'], a1['last_name'])
+        name = util.fmt_name(a1['first_name'], a1['middle_name'], a1['last_name'])
 
         if sdate or edate2:
             x = get_usage_by_dates(project['project_id'], project['resource_id'],
@@ -478,7 +478,7 @@ def show_project(project):
                 print(" status=inactive", end='')
             print("")
             print("PI: {}".format(
-                fmt_name(project['pi_first_name'], project['pi_middle_name'], project['pi_last_name'])))
+                util.fmt_name(project['pi_first_name'], project['pi_middle_name'], project['pi_last_name'])))
             print("{}".format(ux))
             any1 = 1
 
@@ -487,7 +487,7 @@ def show_project(project):
             print(" portal={}".format(username), end='')
         if a1['account_state'] != 'active':
             print(" status=inactive", end='')
-        print(" usage={} {}".format(fmt_amount(float(amt) if amt else 0), x))
+        print(" usage={} {}".format(util.fmt_amount(float(amt) if amt else 0, options.no_commas), x))
 
         for x in j:
             print("      job", end='')
@@ -495,9 +495,9 @@ def show_project(project):
             show_value("id", id)
             show_value("jobname", x['jobname'])
             show_value("resource", x['resource_name'])
-            show_value("submit", fmt_datetime(x['submit_time']))
-            show_value("start", fmt_datetime(x['start_time']))
-            show_value("end", fmt_datetime(x['end_time']))
+            show_value("submit", util.fmt_datetime(x['submit_time']))
+            show_value("start", util.fmt_datetime(x['start_time']))
+            show_value("end", util.fmt_datetime(x['end_time']))
             show_value("cputime", x['cpu_time'])
             show_amt("memory", x['memory'])
             show_value("nodecount", x['nodecount'])
@@ -519,8 +519,8 @@ def show_project(project):
         for x in cd:
             print("     {}".format(x['type']), end='')
             print(" resource={}".format(x['site_resource_name']), end='')
-            print(" date={}".format(fmt_datetime(x['charge_date'])), end='')
-            print(" amount={}".format(fmt_amount(abs(x['amount']))), end='')
+            print(" date={}".format(util.fmt_datetime(x['charge_date'])), end='')
+            print(" amount={}".format(util.fmt_amount(abs(x['amount']), options.no_commas)), end='')
             print("")
 
     if any1:
@@ -531,7 +531,7 @@ def show_project(project):
 def show_amt(label, amt):
     # my($label, $amt) = @_;
     if amt:
-        amt = fmt_amount(float(amt))
+        amt = util.fmt_amount(float(amt), options.no_commas)
     else:
         amt = None
     print(" {}={}".format(label, amt), end='')
@@ -544,24 +544,6 @@ def show_value(label, value):
     print(" {}={}".format(label, value), end='')
 
 
-def fmt_name(first_name, middle_name, last_name):
-    # my($first_name, $middle_name, $last_name) = @_;
-    name = "{} {}".format(last_name, first_name)
-    if middle_name:
-        name += " {}".format(middle_name)
-    return name
-
-
-def fmt_datetime(dt):
-    # my($dt) = shift;
-    if not dt:
-        return None
-
-    # $dt = ~ s /-\d\d$//;
-    dt = re.sub('-\d\d$', '', dt)
-    # $dt =~ s/ /@/;
-    dt = re.sub(' ', '@', dt)
-    return dt
 
 
 def get_dates():
@@ -616,28 +598,6 @@ def check_user():
         sys.exit()
 
 
-
-
-def fmt_amount(amt):
-    if amt == 0:
-        return '0'
-    n = 2
-    if abs(amt) >= 10000:
-        n = 0
-    elif abs(amt) >= 1000:
-        n = 1
-
-    x = float("%.{}f".format(n) % amt)
-    while x == 0:
-        n += 1
-        x = float("%.{}f".format(n) % amt)
-    # $x =~ s/\.0*$//;
-    # $x = commas($x) unless (option_flag('nc'));
-    if not options.no_commas:
-        x = "{:,}".format(x)
-    x = re.sub('\.0*$', '', str(x))
-
-    return x
 
 
 def error(msg):

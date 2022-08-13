@@ -296,6 +296,54 @@ def check_and_run_sudo(exec_script):
 
 
 
+def fmt_amount(amt, no_commas=False):
+    if amt == 0:
+        return '0'
+    n = 2
+    if abs(amt) >= 10000:
+        n = 0
+    elif abs(amt) >= 1000:
+        n = 1
+
+    x = float("%.{}f".format(n) % amt)
+    while x == 0:
+        n += 1
+        x = float("%.{}f".format(n) % amt)
+    # $x =~ s/\.0*$//;
+    # $x = commas($x) unless (option_flag('nc'));
+    if not no_commas:
+        x = "{:,}".format(x)
+    x = re.sub('\.0*$', '', str(x))
+
+    return x
+
+
+
+
+def fmt_datetime(dt):
+    # my($dt) = shift;
+    if not dt:
+        return None
+
+    # $dt = ~ s /-\d\d$//;
+    dt = re.sub('-\d\d$', '', dt)
+    # $dt =~ s/ /@/;
+    dt = re.sub(' ', '@', dt)
+    return dt
+
+
+
+
+def fmt_name(first_name, middle_name, last_name):
+    # my($first_name, $middle_name, $last_name) = @_;
+    name = "{} {}".format(last_name, first_name)
+    if middle_name:
+        name += " {}".format(middle_name)
+    return name
+
+
+
+
 def is_authorized(options, config, command_line):
     # Check if the application is authorized.
     # Add the user's name and other information to be logged as parameters to the auth_test call.
