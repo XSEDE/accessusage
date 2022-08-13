@@ -32,7 +32,6 @@ command_line = None
 
 me = None
 install_dir = None
-is_root = None
 user = None
 plist = []
 resources = []
@@ -787,7 +786,6 @@ def main(wrapper_options, wrapper_config):
     global options
     global config
     global command_line
-    global is_root
     global me
     global install_dir
     global today

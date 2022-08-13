@@ -33,7 +33,6 @@ command_line = None
 
 me = None
 install_dir = None
-is_root = None
 user = None
 plist = []
 resources = []
@@ -585,21 +584,6 @@ def get_dates():
 
 
 
-def check_user():
-    # Check that user accessusage exists, or prompt the admin to create it.
-    try:
-        pwd.getpwnam("accessusage")
-    except KeyError:
-        sys.stderr.write("Required user 'accessusage' does not exist on this system.\n")
-        if is_root:
-            sys.stderr.write("Create the user and run this script again.\n")
-        else:
-            sys.stderr.write( "Please contact your system administrator.\n")
-        sys.exit()
-
-
-
-
 def error(msg):
     print("{}: {}".format(me, msg))
     sys.exit()
@@ -834,7 +818,6 @@ def main(wrapper_options, wrapper_config):
     global options
     global config 
     global command_line
-    global is_root
     global me
     global install_dir
     global today

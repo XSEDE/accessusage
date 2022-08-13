@@ -8,6 +8,7 @@ import time
 import sys
 import urllib
 
+is_root = None
 
 
 
@@ -243,6 +244,8 @@ def check_config(options, config, command_line, resources_func):
 
 
 def check_and_run_sudo(exec_script):
+    global is_root
+
     # find out where this script is running from
     # eliminates the need to configure an install dir
     install_dir = os.path.dirname(os.path.abspath(exec_script))
@@ -292,6 +295,21 @@ def check_and_run_sudo(exec_script):
         logname = os.environ.get('SUDO_USER')
 
     return logname
+
+
+
+
+def check_user():
+    # Check that user accessusage exists, or prompt the admin to create it.
+    try:
+        pwd.getpwnam("accessusage")
+    except KeyError:
+        sys.stderr.write("Required user 'accessusage' does not exist on this system.\n")
+        if is_root:
+            sys.stderr.write("Create the user and run this script again.\n")
+        else:
+            sys.stderr.write( "Please contact your system administrator.\n")
+        sys.exit()
 
 
 
@@ -479,12 +497,7 @@ def run_command_line(cmd):
 def setup_conf():
     # Allow a root user to create and setup the missing configuration file.
     # Check that user accessusage exists, or prompt the admin to create it.
-    try:
-        pwd.getpwnam("accessusage")
-    except KeyError:
-        sys.stderr.write(
-            "Required user 'accessusage' does not exist on this system.\nCreate the user and run this script again.\n")
-        sys.exit()
+    check_user()
 
     # Create the empty configuration file in /etc.
     hostname = socket.gethostname()
