@@ -534,17 +534,17 @@ def get_dates():
     if local_date:
         local_sdate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
         if not local_sdate:
-            error("{} -- not a valid date".format(local_date))
+            util.error("{} -- not a valid date".format(local_date))
     if local_sdate and (local_sdate > local_today):
-        error("The start date (-s) can't be in the future.")
+        util.error("The start date (-s) can't be in the future.")
 
     local_date = options.end_date
     if local_date:
         if not local_sdate:
-            error("The end date option (-e) requires that a start date (-s) be specified.")
+            util.error("The end date option (-e) requires that a start date (-s) be specified.")
         local_edate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
         if not local_edate:
-            error("{} -- not a valid date".format(local_date))
+            util.error("{} -- not a valid date".format(local_date))
         local_edate2 = local_edate + datetime.timedelta(days=1)
 
     if local_sdate:
@@ -555,16 +555,9 @@ def get_dates():
         local_edate2 = local_edate2.strftime("%Y-%m-%d")
 
     if local_sdate and local_edate and (local_sdate > local_edate):
-        error("The end date (-e) can't precede the start date (-s).")
+        util.error("The end date (-e) can't precede the start date (-s).")
 
     return local_sdate, local_edate, local_edate2
-
-
-
-
-def error(msg):
-    print("{}: {}".format(me, msg))
-    sys.exit()
 
 
 
@@ -634,7 +627,7 @@ def get_users():
         if len(g_user_lname) > 0:
             u.extend(g_user_lname)
         if len(u) == 0:
-            error("user {} not found".format(username))
+            util.error("user {} not found".format(username))
         user_list.extend(u)
 
     for username in options.portal_usernames:
@@ -642,7 +635,7 @@ def get_users():
         if u:
             user_list.append(u)
         else:
-            error("user {} not found".format(username))
+            util.error("user {} not found".format(username))
 
     return user_list
 
@@ -713,7 +706,7 @@ def get_resources():
             resource_list.append(r['resource_id'])
             any_r = 1
         if not any_r:
-            error("{} - resource not found".format(name))
+            util.error("{} - resource not found".format(name))
 
     return resource_list
 
@@ -771,15 +764,6 @@ def get_projects():
     return result['result']
 
 
-def is_admin_func(user):
-    is_admin_local = 0
-
-    for admin in admin_names:
-        if user == admin:
-            is_admin_local = 1
-            break
-    return is_admin_local
-
 
 
 def main(wrapper_options, wrapper_config):
@@ -817,7 +801,7 @@ def main(wrapper_options, wrapper_config):
 
     DEBUG = options.debug
     today = datetime.datetime.today().strftime('%Y-%m-%d')
-    is_admin = is_admin_func(logname)
+    is_admin = util.is_admin_func(config, logname)
 
     # admins can set USER to something else and view their allocation
     xuser = os.getenv('USER') if is_admin and os.getenv('USER') else logname
@@ -843,7 +827,7 @@ def main(wrapper_options, wrapper_config):
             any1 = 1
 
     if any1 == 0:
-        error("No projects and/or accounts found")
+        util.error("No projects and/or accounts found")
     sys.exit()
 
 

@@ -98,6 +98,13 @@ def config_error(error_message, num_parameters=1):
 
 
 
+def error(msg):
+    print("{}: {}".format(me, msg))
+    sys.exit()
+
+
+
+
 def get_config(options, accessusage_config_file, install_dir):
     config = { 
         "conf_file": None,
@@ -358,6 +365,18 @@ def fmt_name(first_name, middle_name, last_name):
     if middle_name:
         name += " {}".format(middle_name)
     return name
+
+
+
+
+def is_admin_func(config, user):
+    is_admin_local = 0
+
+    for admin in config["admin_names"]:
+        if user == admin:
+            is_admin_local = 1
+            break
+    return is_admin_local
 
 
 
