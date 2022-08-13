@@ -38,153 +38,8 @@ sdate = None
 edate = None
 edate2 = None
 today = None
+options = None
 
-
-class Options:
-    projects = []
-    resources = []
-    usernames = []
-    portal_usernames = []
-    all_accounts = False
-    jobs = False
-    job_attributes = False
-    previous_allocation = False
-    inactive_projects = False
-    inactive_accounts = False
-    zero_projects = False
-    zero_accounts = False
-    no_commas = False
-    start_date = None
-    end_date = None
-    version = False
-    debug = False
-
-    def __init__(self):
-        pass
-
-
-options = Options()
-
-
-class ArgumentParser(argparse.ArgumentParser):
-
-    def error(self, message):
-        self.print_help(sys.stderr)
-        self.exit(2, '%s: error: %s\n' % (self.prog, message))
-
-
-def parse_args():
-    global options
-
-    aparse = ArgumentParser(prog=me, description="")
-    aparse.add_argument(
-        "-p", "--projects", nargs='*', help="<project>", type=str,
-        required=False)
-    aparse.add_argument(
-        "-r", "--resources", nargs='*', help="<resource>", type=str,
-        required=False)
-    aparse.add_argument(
-        "-u", "--usernames", nargs='*',
-        help="<username|Last name>",
-        type=str)
-    aparse.add_argument(
-        "-P", "--portal_usernames", nargs='*',
-        help="<portal-username>",
-        type=str)
-    aparse.add_argument(
-        "-a", "--all_accounts",
-        help="(show all accounts -- ignored with -u)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-j", "--jobs",
-        help="(show jobs, refunds, etc)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-ja", "--job_attributes",
-        help="(show additional job attributes -- ignored unless -j is specified)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-pa", "--previous_allocation",
-        help="(show previous allocation -- ignored with -s or -e)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-ip", "--inactive_projects",
-        help="(suppress inactive projects)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-ia", "--inactive_accounts",
-        help="(suppress inactive accounts)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-zp", "--zero_projects",
-        help="(suppress projects with zero usage)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-za", "--zero_accounts",
-        help="(suppress accounts with zero usage)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-nc", "--no_commas",
-        help="(don't use commas in reported amounts)",
-        action='store_true', default=False)
-    aparse.add_argument(
-        "-s", "--start_date",
-        help="<start-date>",
-        required=False)
-    aparse.add_argument(
-        "-e", "--end_date",
-        help="<end-date> (requires -s as well)\n (display usage for period between start-date and end-date)",
-        required=False)
-    aparse.add_argument(
-        "-V", "--version",
-        help="(print version information)",
-        action="store_true", default=False)
-    aparse.add_argument('-d', '--debug', action="store_true", help=argparse.SUPPRESS)
-
-    # if not len(sys.argv) > 1:
-    #     aparse.print_help()
-    #     sys.exit()
-    # aparse.error = argument_error
-
-    args = aparse.parse_args()
-
-    if args.projects:
-        options.projects = args.projects
-    else:
-        options.projects = []
-    if args.resources:
-        options.resources = args.resources
-    else:
-        options.resources = []
-    if args.usernames:
-        options.usernames = args.usernames
-    else:
-        options.usernames = []
-    if args.portal_usernames:
-        options.portal_usernames = args.portal_usernames
-    else:
-        options.portal_usernames = []
-    options.all_accounts = args.all_accounts
-    options.jobs = args.jobs
-    options.job_attributes = args.job_attributes
-    options.previous_allocation = args.previous_allocation
-    options.inactive_projects = args.inactive_projects
-    options.inactive_accounts = args.inactive_accounts
-    options.zero_projects = args.zero_projects
-    options.zero_accounts = args.zero_accounts
-    options.no_commas = args.no_commas
-    options.start_date = args.start_date
-    options.end_date = args.end_date
-    options.version = args.version
-    options.debug = args.debug
-
-
-def init():
-    global options
-    parse_args()
-
-    # print("Projects = {}".format(options.projects))
-    # print("Done.")
 
 
 def get_enddate():
@@ -1397,7 +1252,7 @@ def version():
     exit(1)
 
 
-def main():
+def main(wrapper_options):
     global options
     global command_line
     global is_root
@@ -1471,7 +1326,7 @@ def main():
     check_config()
 
     # get argument list
-    init()
+    options = wrapper_options
 
     # print('Version = {}'.format(options.version))
     if options.version:
