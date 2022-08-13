@@ -579,54 +579,6 @@ def get_dates():
     return local_sdate, local_edate, local_edate2
 
 
-def run_command_line(cmd):
-    try:
-        # output = subprocess.check_output(cmd, shell=True)
-        output = os.popen(cmd).read()
-        # print('raw output = {}'.format(output))
-        # cmd = cmd.split()
-        # output = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        # output = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-        #                           stderr=subprocess.PIPE).communicate(input=b'password\n')
-        if len(output) == 0:
-            result = []
-        else:
-            result = str(output).strip().split('\n')
-        # print('result = {}'.format(result))
-    except Exception as e:
-        print("[-] run cmd = {} error = {}".format(cmd, e))
-        sys.exit()
-
-    return result
-
-
-def check_sudo():
-    """
-    # Check that the /etc/sudoers file is set up correctly and
-    # warn the administrator if it is not.
-    :return:
-    """
-
-    found = 0
-    result = run_command_line('sudo -l -n | grep accessusage')
-
-    if len(result) > 0:
-        found = 1
-
-    if not found:
-        sys.stderr.write("The /etc/sudoers file is not set up correctly.\n")
-        if is_root:
-            msg = "The /etc/sudoers file needs to contain the following lines in order for non-root users to run " \
-                  "correctly:\t\nDefault!{}/accessusage runas_default=accessusage\t\nDefault!{}/accessusage " \
-                  "env_keep=\"USER\"\t\nALL  ALL=(accessusage) NOPASSWD:{}/accessusage\n".format(install_dir, install_dir,
-                                                                                     install_dir)
-            sys.stderr.write(msg)
-            sys.exit()
-        else:
-            print("Please contact your system administrator.")
-            sys.exit()
-
-
 
 
 def fmt_amount(amt):
@@ -913,69 +865,20 @@ def main(wrapper_options, wrapper_config):
     global sdate, edate, edate2
     global rest_url
 
-    # find out where this script is running from
-    # eliminates the need to configure an install dir
-    install_dir = path.dirname(path.abspath(__file__))
-    # print('install dir = {}'.format(install_dir))
-    me = sys.argv[0].split('/')[-1]
-    # print('me = {}'.format(me))
 
-    # Perl always has "." on the end of @INC, and it causes problems if the
-    # xdinfo user can't read the current working directory.
-    # no lib "." will remove . from @INC--safer than pop(@INC).
-    # no lib ".";
-
-    # Determine if the script is being run by root.
-    # Root will be given setup instructions, if necessary, and
-    # will be given directions to correct errors, where possible.
-    # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
-    is_root = (pwd.getpwuid(os.getuid())[0] == "root")
-    # print('is root = {}'.format(is_root))
-    command_line = " ".join(sys.argv[1:])
-    # print('command line = {}'.format(command_line))
-    if is_root:
-        sys.stderr.write("You are running this script as root.\nAs an administrator, you will be given directions to "
-                         "set up accessusage to run on this machine, if needed.\nWhere possible, you will also be given "
-                         "instructions to correct any errors that are detected.\n\n")
-
-    # Root needs to check that the sodoers file is set up correctly,
-    # but doesn't need to run with sudo.
-    logname = ''
-    if is_root:
-        check_sudo()
-        logname = "root"
-    elif 'SUDO_USER' not in os.environ:
-        # Check that the sudoers file is set up correctly.
-        check_sudo()
-
-        # This script needs to be run by sudo to provide a reasonably-
-        # assured user ID with access to the configuration file.
-        # Re-run the script using sudo.
-        sys.argv.insert(1, '{}/accessusage'.format(install_dir))
-        #sys.argv.insert(1, "sudo")
-        try:
-            #print('command args = {}'.format(sys.argv[1:]))
-            if os.geteuid() != 0:
-                #The extra "sudo" in thesecond parameter is required because
-                #Python doesn't automatically set $0 in the new process.
-                os.execvp("sudo", ["sudo"] + sys.argv[1:])
-        except Exception as e:
-            print("command does not work: {}".format(e))
-            sys.exit()
-
-    else:
-        logname = os.environ.get('SUDO_USER')
+    # re-run this as sudo to access credentials
+    logname = util.check_and_run_sudo(__file__)
 
     # get argument list
     options = wrapper_options
 
     # check authorization and resource
-    resources_func = "{}/xdusage/v1/resources/{}".format(wrapper_config["rest_url_base"], urllib.parse.quote(wrapper_config["resource"]))
+    resources_func = "{}/xdusage/v1/resources/{}".format(wrapper_config["rest_url"], urllib.parse.quote(wrapper_config["resource"]))
     util.check_config(options, wrapper_config, __file__, resources_func)
     config = wrapper_config
 
     # set rest_url
-    rest_url = config["rest_url_base"]
+    rest_url = config["rest_url"]
 
     # set resource
     resource = config["resource"]
