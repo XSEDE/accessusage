@@ -1427,15 +1427,15 @@ def main():
         # assured user ID with access to the configuration file.
         # Re-run the script using sudo.
         sys.argv.insert(1, '{}/accessusage'.format(install_dir))
-        sys.argv.insert(1, "sudo")
+        #sys.argv.insert(1, "sudo")
         try:
-            command_xdusage = " ".join(sys.argv[1:])
-            # print('command xdusage = {}'.format(command_xdusage))
-            if os.system(command_xdusage) != 0:
-                sys.stderr.write("Couldn't exect sudo: \n")
-                sys.exit()
-        except:
-            print("command does not work")
+            #print('command args = {}'.format(sys.argv[1:]))
+            if os.geteuid() != 0:
+                #The extra "sudo" in thesecond parameter is required because
+                #Python doesn't automatically set $0 in the new process.
+                os.execvp("sudo", ["sudo"] + sys.argv[1:])
+        except Exception as e:
+            print("command does not work: {}".format(e))
             sys.exit()
 
     else:
