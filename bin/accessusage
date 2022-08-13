@@ -2,8 +2,14 @@
 import accessusage_v1
 import accessusage_v2
 import argparse
+import os
 import sys
 
+file_path = os.path.abspath(__file__)
+bin_path = os.path.split(file_path)[0]    # drop file name
+accessusage_path = os.path.split(bin_path)[0]    # drop file name
+sys.path.append(accessusage_path)
+import util
 
 class ArgumentParser(argparse.ArgumentParser):
     def error(self, message):
@@ -47,7 +53,7 @@ def remove_argument():
 def parse_args():
     aparse = ArgumentParser(description="Reports the status of all your allocations")
     list_of_choices = ["1", "2"]
-    aparse.add_argument("-av", "--apiversion", help="Specify the specific version of accessusage. The default version is 2", default="2", choices=list_of_choices)
+    aparse.add_argument("-av", "--apiversion", help="Specify the specific version of accessusage. The default version is 2", choices=list_of_choices)
     aparse.add_argument(
         "-p", "--projects", nargs='*', help="<project>", type=str,
         required=False)
@@ -158,7 +164,22 @@ def parse_args():
 
 options = parse_args()
 
+install_dir = os.path.dirname(os.path.abspath(__file__))
+config = util.get_config(options, "accessusage_v2.conf", install_dir)
+if options.apiversion is None:
+    url = "{}/xdusage/v2/api/production".format(config["rest_url"])
+    production = util.json_get(options, config, url)
+    if production and production["result"]:
+      options.apiversion = "2"
+    else:
+      options.apiversion = "1"
+
+if options.version:
+    print("accessusage version {}, api version {}".format('1.0', options.apiversion))
+    exit(1)
+
 if options.apiversion == '1':
-    accessusage_v1.main(options)
+    config = util.get_config(options, "accessusage_v1.conf", install_dir)
+    accessusage_v1.main(options, config)
 elif options.apiversion == '2':
-    accessusage_v2.main(options)
+    accessusage_v2.main(options, config)
