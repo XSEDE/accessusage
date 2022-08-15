@@ -98,7 +98,7 @@ def config_error(error_message, num_parameters=1):
 
 
 
-def error(msg):
+def error(me, msg):
     print("{}: {}".format(me, msg))
     sys.exit()
 

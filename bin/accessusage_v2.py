@@ -539,17 +539,17 @@ def get_dates():
     if local_date:
         local_sdate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
         if not local_sdate:
-            util.error("{} -- not a valid date".format(local_date))
+            util.error(me, "{} -- not a valid date".format(local_date))
     if local_sdate and (local_sdate > local_today):
-        util.error("The start date (-s) can't be in the future.")
+        util.error(me, "The start date (-s) can't be in the future.")
 
     local_date = options.end_date
     if local_date:
         if not local_sdate:
-            util.error("The end date option (-e) requires that a start date (-s) be specified.")
+            util.error(me, "The end date option (-e) requires that a start date (-s) be specified.")
         local_edate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
         if not local_edate:
-            util.error("{} -- not a valid date".format(local_date))
+            util.error(me, "{} -- not a valid date".format(local_date))
         local_edate2 = local_edate + datetime.timedelta(days=1)
 
     if local_sdate:
@@ -560,7 +560,7 @@ def get_dates():
         local_edate2 = local_edate2.strftime("%Y-%m-%d")
 
     if local_sdate and local_edate and (local_sdate > local_edate):
-        util.error("The end date (-e) can't precede the start date (-s).")
+        util.error(me, "The end date (-e) can't precede the start date (-s).")
 
     return local_sdate, local_edate, local_edate2
 
@@ -640,7 +640,7 @@ def get_users():
         if len(g_user_lname) > 0:
             u.extend(g_user_lname)
         if len(u) == 0:
-            util.error("user {} not found".format(username))
+            util.error(me, "user {} not found".format(username))
         user_list.extend(u)
 
     for username in options.portal_usernames:
@@ -648,7 +648,7 @@ def get_users():
         if u:
             user_list.append(u)
         else:
-            util.error("user {} not found".format(username))
+            util.error(me, "user {} not found".format(username))
 
     return user_list
 
@@ -719,7 +719,7 @@ def get_resources():
             resource_list.append(r['resource_id'])
             any_r = 1
         if not any_r:
-            util.error("{} - resource not found".format(name))
+            util.error(me, "{} - resource not found".format(name))
 
     return resource_list
 
@@ -844,7 +844,7 @@ def main(wrapper_options, wrapper_config):
             any1 = 1
 
     if any1 == 0:
-        util.error("No projects and/or accounts found")
+        util.error(me, "No projects and/or accounts found")
     sys.exit()
 
 
