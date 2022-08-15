@@ -414,7 +414,7 @@ def show_project(project):
         alloc = get_allocation(project['account_id'], project['resource_id'], options.previous_allocation)
         if len(alloc) == 0:
             return 0
-        amt = alloc['su_used']
+        amt = float(alloc['su_used'])
         if amt == 0 and options.zero_projects:
             return 0
         x = get_counts_on_allocation(alloc['allocation_id'])
@@ -423,7 +423,7 @@ def show_project(project):
             alloc['alloc_end'],
             util.fmt_amount(float(alloc['su_allocated']), options.no_commas),
             util.fmt_amount(float(alloc['su_remaining']), options.no_commas),
-            util.fmt_amount(float(amt), options.no_commas),
+            util.fmt_amount(amt, options.no_commas),
             x)
     any1 = 0
     for a1 in a:
