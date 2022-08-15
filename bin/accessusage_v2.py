@@ -490,28 +490,28 @@ def show_project(project):
         for x in j:
             print("      job", end='')
             id = x['local_job_id']
-            show_value("id", id)
-            show_value("jobname", x['jobname'])
-            show_value("resource", x['resource_name'])
-            show_value("submit", util.fmt_datetime(x['submit_time']))
-            show_value("start", util.fmt_datetime(x['start_time']))
-            show_value("end", util.fmt_datetime(x['end_time']))
-            show_value("cputime", x['cpu_time'])
-            show_amt("memory", x['memory'])
-            show_value("nodecount", x['nodecount'])
-            show_value("processors", x['processors'])
-            show_value("queue", x['queue'])
-            show_value("walltime", x['wall_time'])
-            show_amt("charge", x['charge'])
+            util.show_value("id", id)
+            util.show_value("jobname", x['jobname'])
+            util.show_value("resource", x['resource_name'])
+            util.show_value("submit", util.fmt_datetime(x['submit_time']))
+            util.show_value("start", util.fmt_datetime(x['start_time']))
+            util.show_value("end", util.fmt_datetime(x['end_time']))
+            util.show_value("cputime", x['cpu_time'])
+            util.show_amt("memory", x['memory'])
+            util.show_value("nodecount", x['nodecount'])
+            util.show_value("processors", x['processors'])
+            util.show_value("queue", x['queue'])
+            util.show_value("walltime", x['wall_time'])
+            util.show_amt("charge", x['charge'])
             print("")
             if options.job_attributes:
                 job_id = x['job_id']
                 jav = get_job_attributes(job_id)
                 for jav1 in jav:
                     print("        job-attr", end='')
-                    show_value("id", id)
-                    show_value("name", jav1['name'])
-                    show_value("value", jav1['value'])
+                    util.show_value("id", id)
+                    util.show_value("name", jav1['name'])
+                    util.show_value("value", jav1['value'])
                     print("")
 
         for x in cd:
@@ -524,22 +524,6 @@ def show_project(project):
     if any1:
         print("")
     return any1
-
-
-def show_amt(label, amt):
-    # my($label, $amt) = @_;
-    if amt:
-        amt = util.fmt_amount(float(amt), options.no_commas)
-    else:
-        amt = None
-    print(" {}={}".format(label, amt), end='')
-
-
-def show_value(label, value):
-    # my($label, $value) = @_;
-    if not value:
-        value = None
-    print(" {}={}".format(label, value), end='')
 
 
 

@@ -564,3 +564,21 @@ def setup_conf():
         "configuration process.".format(local_conf_file)
     )
     sys.exit()
+
+
+
+
+def show_amt(label, amt):
+    # my($label, $amt) = @_;
+    if amt:
+        amt = fmt_amount(amt, options.no_commas)
+        print(" {}={}".format(label, amt), end='')
+
+
+
+
+def show_value(label, value):
+    # my($label, $value) = @_;
+    if value:
+        print(" {}={}".format(label, value), end='')
+
