@@ -58,43 +58,62 @@ R3) Edit /etc/sudoers to grant permission for everyone to run accessusage as the
       Defaults!<INSTALL_DIR>/bin/accessusage runas_default=accessusage
       ALL ALL=(accessusage) NOPASSWD: <INSTALL_DIR>/bin/accessusage
 
-R4) Create the accessusage_v1.conf and accessusage_v2.conf files. 
-   Run the accessusage script as root and it will create an initial configuration file for you at /etc/accessusage_v1.conf and /etc/accessusage_v2.conf .
-   The script will set the ownership to root:accessusage and the file permissions to 640.
+R4) Create the accessusage_v1.conf (legacy XDCDB database) and accessusage_v2.conf (new ACDB database) files.   
 
-   You can create the configuration file youself instead.
-   Examine the example file <INSTALL_DIR>/etc/accessusage_v[1,2].conf.example for further guidance.
-   This example file may be used with minor editing. 
+    MIGRATING FROM XDUSAGE: If you have an existing xdusage.conf file, you can copy it over to /etc/accessusage_v1.conf.  
+    The /etc/accessusage_v2.conf can then be created by 
+        a) copying the <INSTALL_DIR>/etc/accessusage_v2.conf.example to /etc/accessusage_v2.conf
+        b) Submit a ticket to explictly request your XDCDB key over to ACDB.  I.e.,
 
-   The accessusage script looks for the configuration file in the following ordered locations:
-      /etc/accessusage_v[1,2].conf,
-      /var/secrets/accessusage_v[1,2].conf,
-      <INSTALL_DIR>/etc/accessusage_v[1,2].conf
-   This file will contain secrets, so should NOT have world-readable permissions.
-   Set its mode to 0640 with owned:group set to root:accessusage.
-
-R5) An API key needs to be generated and configured in the accessusage_v1.conf and accessusage_v2.conf files. A hash of that API key also needs to be
-    configured into the API that accessusage will call. Instructions for generating the API key and hash and for getting the
-    hash configured in the API are at https://xsede-xdcdb-api.xsede.org/.
-
-    A resource_name and api_id also needs to be configured in the accessusage.conf file. The resource_name is used by accessusage
-    to map usernames to people in the XDCDB. The api_id (along with the api_key) are used to authenticate accessusage to the
-    API. Both of these values should be the same and must match the XDCDB Resource Name as listed at:
-    https://info.xsede.org/wh1/warehouse-views/v1/resources-xdcdb-active/?format=html;sort=ResourceID
+           Subject: ACDB API-KEY copy request
+   
+           Please copy the following HASH for agent xdusage on resource <RESOURCE NAME>
+   
+           <key hash>
+   
+           on server https://allocations-api.access-ci.org/acdb/
+        c) Copy your api_id, api_key, and resource values from /etc/accessusage_v1.conf to /etc/accessusage_v2.conf
+ 
     
-    An example accessusage_v1.conf file with the information needed by the API:
-      resource_name     = ranger.tacc.teragrid
-      rest_url_base     = https://xsede-xdcdb-api.xsede.org/
-      api_id            = ranger.tacc.teragrid
-      api_key           = abcdgzCvPliUd2Hxa2k6Z3KCQzbgs8uSzjQpn2O4+62mEO9aEDTYJqcRhktODxyz
-      admin_name        = mshapiro
+    OTHERWISE: The following steps will need to be generate the /etc/accessusage_v2.conf file 
+ 
+        a) Run the accessusage script as root and it will create an initial configuration file for you at 
+           /etc/accessusage_v2.conf.  The script will set the ownership to root:accessusage and the file permissions to 640.
 
-R6) Install an accessusage modules file to make it easier for users to access it. Copy the sample file in
+           You can also create the configuration file youself instead.
+           Examine the example file <INSTALL_DIR>/etc/accessusage_v2.conf.example for further guidance.
+           This example file may be used with minor editing. 
+   
+           The accessusage script looks for the configuration file in the following ordered locations:
+               /etc/accessusage_v2.conf,
+               /var/secrets/accessusage_v2.conf,
+               <INSTALL_DIR>/etc/accessusage_v2.conf
+           This file will contain secrets, so should NOT have world-readable permissions.
+           Set its mode to 0640 with owned:group set to root:accessusage.
+
+        b) An API key needs to be generated and configured in the accessusage_v2.conf files. A hash of that 
+           API key also needs to be configured into the API that accessusage will call. Instructions for generating the API key 
+           and hash and for getting the hash configured in the API are at https://allocations-api.access-ci.org/acdb.
+
+           A resource_name and api_id also needs to be configured in the accessusage_v2.conf file. The resource_name is used by 
+           accessusage to map usernames to people in the ACDB. The api_id (along with the api_key) are used to authenticate 
+           accessusage to the API. Both of these values should be the same and must match the XDCDB Resource Name as listed at:
+            
+           https://info.xsede.org/wh1/warehouse-views/v1/resources-xdcdb-active/?format=html;sort=ResourceID
+    
+           An example accessusage_v2.conf file with the information needed by the API:
+             resource_name     = ranger.tacc.teragrid
+             rest_url_base     = https://allocations-api.access-ci.org/acdb
+             api_id            = ranger.tacc.teragrid
+             api_key           = abcdgzCvPliUd2Hxa2k6Z3KCQzbgs8uSzjQpn2O4+62mEO9aEDTYJqcRhktODxyz
+             admin_name        = mshapiro
+
+R5) Install an accessusage modules file to make it easier for users to access it. Copy the sample file in
     <INSTALL_DIR>/etc/accessusage.modules.example to /usr/local/Modules/modulefiles/accessusage/%VER%-%REL%
     (or a Module directory of your choosing) and mark the default by specifying %VER%-%REL% in the
     associated /usr/local/Modules/modulefiles/accessusage/.version file.
 
-R7) Look at the docs/INSTALL_Testing document for a sanity-check command line to run.
+R6) Look at the docs/INSTALL_Testing document for a sanity-check command line to run.
 
 
 **********************
@@ -123,4 +142,4 @@ T4) Create a non-root user and dedicated group that does not map to an actual pe
       password disabled ('*' in the shadow file) 
       home=/
 
-T5) Follow steps R3) thru R7) above
+T5) Follow steps R3) thru R6) above
