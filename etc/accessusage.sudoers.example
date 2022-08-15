@@ -1,0 +1,4 @@
+# sudoers include file for accessusage
+Defaults!INSTALL_DIR/bin/accessusage env_keep="USER"
+Defaults!INSTALL_DIR/bin/accessusage runas_default=accessusage
+ALL ALL=(accessusage) NOPASSWD: INSTALL_DIR/bin/accessusage

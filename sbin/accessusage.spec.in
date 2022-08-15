@@ -49,25 +49,27 @@ mkdir -p ${DESTDIR}/docs
 mkdir -p ${DESTDIR}/etc
 mkdir -p ${DESTDIR}/sbin
 cp -p bin/accessusage* ${DESTDIR}/bin/
-cp -p GETTING_STARTED.md ${DESTDIR}/docs/
+cp -p bin/util.py ${DESTDIR}/bin/
+cp -p README.md ${DESTDIR}/docs/
+cp -p LICENSE.txt ${DESTDIR}/docs/
+cp -p NOTICE ${DESTDIR}/docs/
 cp -p etc/accessusage_v1.conf.example ${DESTDIR}/etc/
 cp -p etc/accessusage_v2.conf.example ${DESTDIR}/etc/
 
 %files
 %attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/bin/accessusage*
-%attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/docs/GETTING_STARTED.md
 %attr(0640, root   , accessusage) /usr/local/accessusage-%VER%-%REL%/etc/accessusage_v1.conf.example
 %attr(0640, root   , accessusage) /usr/local/accessusage-%VER%-%REL%/etc/accessusage_v2.conf.example
-#%attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/etc/accessusage.modules.example
-#%attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/etc/accessusage.sudoers.example
+%attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/etc/accessusage.modules.example
+%attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/etc/accessusage.sudoers.example
 
 %clean
 
 %post
 
 #clean up relocation problems
-#sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.modules.example
-#sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.sudoers.example
+sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.modules.example
+sed -i -e "s|INSTALL_DIR|$RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%|g" $RPM_INSTALL_PREFIX/accessusage-%VER%-%REL%/etc/accessusage.sudoers.example
 
 
 
