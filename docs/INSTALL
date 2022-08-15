@@ -1,0 +1,126 @@
+**********************************************
+** accessusage-%VER%-%REL% Install Instructions
+**********************************************
+
+Instructions for installing accessusage from RPM (recommended) or from TAR.
+
+
+**********************
+** RPM Installation **
+**********************
+
+R1) Configure trust in the XSEDE-Production repository
+
+   a) Browse the following directory and copy the link to the package that matches your operating system:
+      https://software.xsede.org/production/repo/repos/
+
+   b) Install the package at the link you copied above:
+      rpm -i https://software.xsede.org/production/repo/repos/XSEDE-Production-config.<OPERATING SYSTEM>.noarch.rpm
+
+   You may see a warning like this:
+      warning: XSEDE-Production-config.centos-5-1.noarch.rpm: Header V3 DSA signature: NOKEY, key ID 20423dbb
+
+   This is a signature trust bootstrapping issue because until you complete this entire procedure, RPM doesn't trust the signer of this RPM.
+
+   c) Lastly, configure RPM to trust XSEDE's signature (PGP key) installed in the previous step:
+      rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-XSEDE-Production
+
+   SECURITY NOTE:
+   If you need greater security assurance modify the above procedure as follows:
+   a') Browse the package directory using https and review the server's HTTPS/TLS host certificate
+   b') Download the package over https using your favorite secure download tool
+   c') Verify the RPM before you install it using "rpm -Kv <package>"
+
+   DEVELOPMENT REPO NOTE: If you are installing XSEDE-Development repository packages, follow this procedure:
+      https://software.xsede.org/development/repo/repoconfig.txt
+
+R2) Install accessusage
+
+   NOTE: This package automatically creates an "accessusage" account that owns the files and will
+         execute accessusage via sudo.
+
+   Install via rpm/yum these pre-requisites:
+   - sudo
+
+   To install to the default location “/usr/local/accessusage-%VER%-%REL%” use these commands:
+   # yum install accessusage
+
+   To install to a different location, say “/soft/accessusage-%VER%-%REL%”, use these commands:
+   # yum install yum-downloadonly
+   # yum update accessusage -y --downloadonly --downloaddir=./
+   # rpm -i --prefix=<INSTALL_DIR> ./accessusage-%VER%%REL%-1.noarch.rpm
+
+
+R3) Edit /etc/sudoers to grant permission for everyone to run accessusage as the non_root user "accessusage" (created when the rpm was installed).
+    This can be done by adding these lines:
+
+      Defaults!<INSTALL_DIR>/bin/accessusage env_keep="USER"
+      Defaults!<INSTALL_DIR>/bin/accessusage runas_default=accessusage
+      ALL ALL=(accessusage) NOPASSWD: <INSTALL_DIR>/bin/accessusage
+
+R4) Create the accessusage_v1.conf and accessusage_v2.conf files. 
+   Run the accessusage script as root and it will create an initial configuration file for you at /etc/accessusage_v1.conf and /etc/accessusage_v2.conf .
+   The script will set the ownership to root:accessusage and the file permissions to 640.
+
+   You can create the configuration file youself instead.
+   Examine the example file <INSTALL_DIR>/etc/accessusage_v[1,2].conf.example for further guidance.
+   This example file may be used with minor editing. 
+
+   The accessusage script looks for the configuration file in the following ordered locations:
+      /etc/accessusage_v[1,2].conf,
+      /var/secrets/accessusage_v[1,2].conf,
+      <INSTALL_DIR>/etc/accessusage_v[1,2].conf
+   This file will contain secrets, so should NOT have world-readable permissions.
+   Set its mode to 0640 with owned:group set to root:accessusage.
+
+R5) An API key needs to be generated and configured in the accessusage_v1.conf and accessusage_v2.conf files. A hash of that API key also needs to be
+    configured into the API that accessusage will call. Instructions for generating the API key and hash and for getting the
+    hash configured in the API are at https://xsede-xdcdb-api.xsede.org/.
+
+    A resource_name and api_id also needs to be configured in the accessusage.conf file. The resource_name is used by accessusage
+    to map usernames to people in the XDCDB. The api_id (along with the api_key) are used to authenticate accessusage to the
+    API. Both of these values should be the same and must match the XDCDB Resource Name as listed at:
+    https://info.xsede.org/wh1/warehouse-views/v1/resources-xdcdb-active/?format=html;sort=ResourceID
+    
+    An example accessusage_v1.conf file with the information needed by the API:
+      resource_name     = ranger.tacc.teragrid
+      rest_url_base     = https://xsede-xdcdb-api.xsede.org/
+      api_id            = ranger.tacc.teragrid
+      api_key           = abcdgzCvPliUd2Hxa2k6Z3KCQzbgs8uSzjQpn2O4+62mEO9aEDTYJqcRhktODxyz
+      admin_name        = mshapiro
+
+R6) Install an accessusage modules file to make it easier for users to access it. Copy the sample file in
+    <INSTALL_DIR>/etc/accessusage.modules.example to /usr/local/Modules/modulefiles/accessusage/%VER%-%REL%
+    (or a Module directory of your choosing) and mark the default by specifying %VER%-%REL% in the
+    associated /usr/local/Modules/modulefiles/accessusage/.version file.
+
+R7) Look at the docs/INSTALL_Testing document for a sanity-check command line to run.
+
+
+**********************
+** TAR Installation **
+**********************
+
+Prerequisites: sudo and Python3
+
+Installation steps:
+
+T1) Download the latest accessusage package and signature from:
+    https://software.xsede.org/production/accessusage/latest/
+    Verify the downloaded package against the signature
+
+T2) Untar the package:
+    tar -xzvf accessusage-%VER%-%REL%.tgz
+
+T3) Copy accessusage-%VER%-%REL%/bin/accessusage to a directory of your choosing, <INSTALL_DIR>.
+    The accessusage file should have permissions 0555, owned by root:root, so that it is not
+    inadvertently changed.  DO NOT make this file owned by the accessusage user described below.
+
+T4) Create a non-root user and dedicated group that does not map to an actual person.
+    We'll refer to this user as 'accessusage' and group 'accessusage', though you can use any name you
+    choose.  Generally, you'll want to set this user with: 
+      shell=/dev/null 
+      password disabled ('*' in the shadow file) 
+      home=/
+
+T5) Follow steps R3) thru R7) above
