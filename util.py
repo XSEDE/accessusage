@@ -568,10 +568,10 @@ def setup_conf():
 
 
 
-def show_amt(label, amt):
+def show_amt(label, amt, no_commas):
     # my($label, $amt) = @_;
     if amt:
-        amt = fmt_amount(amt, options.no_commas)
+        amt = fmt_amount(amt, no_commas)
         print(" {}={}".format(label, amt), end='')
 
 

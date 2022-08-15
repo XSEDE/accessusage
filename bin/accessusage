@@ -178,8 +178,11 @@ if options.version:
     print("accessusage version {}, api version {}".format('1.0', options.apiversion))
     exit(1)
 
-if options.apiversion == '1':
-    config = util.get_config(options, "accessusage_v1.conf", install_dir)
-    accessusage_v1.main(options, config)
-elif options.apiversion == '2':
-    accessusage_v2.main(options, config)
+try:
+    if options.apiversion == '1':
+        config = util.get_config(options, "accessusage_v1.conf", install_dir)
+        accessusage_v1.main(options, config)
+    elif options.apiversion == '2':
+        accessusage_v2.main(options, config)
+except KeyboardInterrupt:
+    pass

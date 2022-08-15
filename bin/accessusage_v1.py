@@ -477,12 +477,11 @@ def show_project(project):
             util.show_value("submit", util.fmt_datetime(x['submit_time']))
             util.show_value("start", util.fmt_datetime(x['start_time']))
             util.show_value("end", util.fmt_datetime(x['end_time']))
-            util.show_amt("memory", x['memory'])
+            util.show_amt("memory", x['memory'], options.no_commas)
             util.show_value("nodecount", x['nodecount'])
             util.show_value("processors", x['processors'])
             util.show_value("queue", x['queue'])
-            print(globals())
-            util.show_amt("charge", float(x['adjusted_charge']))
+            util.show_amt("charge", float(x['adjusted_charge']), options.no_commas)
             print("")
             if options.job_attributes:
                 job_id = x['job_id']
