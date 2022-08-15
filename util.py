@@ -72,7 +72,7 @@ def check_sudo(install_dir):
 
 
 
-def config_error(error_message, num_parameters=1):
+def config_error(config_file, error_message, num_parameters=1):
     """
     # Show the root user the error message for the configuration file.
     # Show other users a generic message. Exit in either case.
@@ -89,11 +89,11 @@ def config_error(error_message, num_parameters=1):
         else:
             message = "{} \nThe configuration file ({}) should have one entry for each of the " \
                       "following:\n\tapi_key\n\tapi_id\n\tresource_name\n\trest_url_base".format(error_message,
-                                                                                                   conf_file)
+                                                                                                   config_file)
         print(message)
         sys.exit()
     else:
-        error("There is a problem with the configuration file.\nPlease contact your system administrator.")
+        error(config_file, "There is a problem with the configuration file.\nPlease contact your system administrator.")
 
 
 
@@ -106,6 +106,15 @@ def error(me, msg):
 
 
 def get_config(options, accessusage_config_file, install_dir):
+    global is_root
+
+    # Determine if the script is being run by root.
+    # Root will be given setup instructions, if necessary, and
+    # will be given directions to correct errors, where possible.
+    # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
+    is_root = (pwd.getpwuid(os.getuid())[0] == "root")
+    # print('is root = {}'.format(is_root))
+
     config = { 
         "conf_file": None,
         "api_key": None,
@@ -137,7 +146,7 @@ def get_config(options, accessusage_config_file, install_dir):
             sys.stderr.write("The configuration file could not be located in:\n  ")
             sys.stderr.write("\n  ".join(conf_file_list))
             sys.stderr.write("\n")
-            setup_conf(config["conf_file"])
+            setup_conf(accessusage_config_file)
         else:
             print("Unable to find the configuration file.\nPlease contact your system administrator.")
             sys.exit()
@@ -154,7 +163,7 @@ def get_config(options, accessusage_config_file, install_dir):
     root_uid = pwd.getpwnam("root").pw_uid
     # print("sb uid = {} root uid = {}".format(sb.st_uid, root_uid))
     if sb.st_uid != root_uid:
-        config_error("Configuration file '{}' must be owned by user 'root'.".format(config["conf_file"]), num_parameters=2)
+        config_error(accessusage_config_file, "Configuration file '{}' must be owned by user 'root'.".format(config["conf_file"]), num_parameters=2)
         # pass
     try:
         xdusage_gid = grp.getgrnam("accessusage").gr_gid
@@ -162,7 +171,7 @@ def get_config(options, accessusage_config_file, install_dir):
         xdusage_gid = -1
     # print("sb gid = {} accessusage gid = {}".format(sb.st_gid, xdusage_gid))
     if sb.st_gid != xdusage_gid:
-        config_error("Configuration file '{}' must be owned by group 'accessusage'.".format(config["conf_file"]), num_parameters=2)
+        config_error(accessusage_config_file, "Configuration file '{}' must be owned by group 'accessusage'.".format(config["conf_file"]), num_parameters=2)
         # pass
     # Check that the configuration file has the correct permissions.
     # mode = stat.S_IMODE(sb.st_mode)
@@ -172,7 +181,7 @@ def get_config(options, accessusage_config_file, install_dir):
     if mode != '640':
         message = "Configuration file '{}' has permissions '{}', it must have permissions '0640'.".format(config["conf_file"], mode)
         # uncomment it
-        config_error(message, num_parameters=2)
+        config_error(accessusage_config_file, message, num_parameters=2)
 
     # line_list = list(con_fd.readlines())
     # i = 0
@@ -199,21 +208,21 @@ def get_config(options, accessusage_config_file, install_dir):
 
         if key == 'api_key':
             if config["api_key"]:
-                config_error("Multiple 'api_key' values found.")
+                config_error(accessusage_config_file, "Multiple 'api_key' values found.")
             config["api_key"] = val
         elif key == 'api_id':
             if config["api_id"]:
-                config_error("Multiple 'api_id' values found.")
+                config_error(accessusage_config_file, "Multiple 'api_id' values found.")
             config["api_id"] = val
         elif key == 'resource_name':
             if config["resource"]:
-                config_error("Multiple 'resource_name' values found.")
+                config_error(accessusage_config_file, "Multiple 'resource_name' values found.")
             config["resource"] = val
         elif key == 'admin_name':
             config["admin_names"].insert(0, val)
         elif key == 'rest_url_base':
             if config["rest_url"]:
-                config_error("Multiple 'rest_url_base' values found.")
+                config_error(accessusage_config_file, "Multiple 'rest_url_base' values found.")
             config["rest_url"] = val
         else:
             if is_root:
@@ -227,13 +236,13 @@ def get_config(options, accessusage_config_file, install_dir):
 
     # stop here if missing required values
     if not config["api_id"]:
-        config_error("Unable to find the 'api_id' value.")
+        config_error(accessusage_config_file, "Unable to find the 'api_id' value.")
     if not config["api_key"]:
-        config_error("Unable to find the 'api_key' value.")
+        config_error(accessusage_config_file, "Unable to find the 'api_key' value.")
     if not config["resource"]:
-        config_error("Unable to find the 'resource_name' value.")
+        config_error(accessusage_config_file, "Unable to find the 'resource_name' value.")
     if not config["rest_url"]:
-        config_error("Unable to find the 'rest_url_base' value.")
+        config_error(accessusage_config_file, "Unable to find the 'rest_url_base' value.")
 
     return config
 
@@ -260,12 +269,6 @@ def check_and_run_sudo(exec_script):
     me = sys.argv[0].split('/')[-1]
     # print('me = {}'.format(me))
 
-    # Determine if the script is being run by root.
-    # Root will be given setup instructions, if necessary, and
-    # will be given directions to correct errors, where possible.
-    # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
-    is_root = (pwd.getpwuid(os.getuid())[0] == "root")
-    # print('is root = {}'.format(is_root))
     command_line = " ".join(sys.argv[1:])
     # print('command line = {}'.format(command_line))
     if is_root:
@@ -426,7 +429,7 @@ def is_authorized(options, config, command_line):
                       "API_KEY into the configuration file. \nIn either case, send the following e-mail to " \
                       "help@xsede.org to register with the hash and key. \nSubject: XDCDB API-KEY installation " \
                       "request \nPlease install the following HASH for agent xdusage on resource '{}'. \n<Replace " \
-                      "this with the HASH you are using>\n".format(conf_file, APIID)
+                      "this with the HASH you are using>\n".format(config["conf_file"], config["api_id"])
             sys.stderr.write(message)
         else:
             sys.stderr.write(
@@ -513,14 +516,14 @@ def run_command_line(cmd):
 
 
 
-def setup_conf():
+def setup_conf(config_filename):
     # Allow a root user to create and setup the missing configuration file.
     # Check that user accessusage exists, or prompt the admin to create it.
     check_user()
 
     # Create the empty configuration file in /etc.
     hostname = socket.gethostname()
-    local_conf_file = "/etc/{}".format(XDUSAGE_CONFIG_FILE)
+    local_conf_file = "/etc/{}".format(config_filename)
     try:
         open_mode = 0o640
         con_fd = os.open(local_conf_file, os.O_WRONLY | os.O_CREAT, open_mode)
