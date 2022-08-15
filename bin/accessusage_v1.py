@@ -391,7 +391,7 @@ def show_project(project):
     if sdate or edate2:
         x = get_usage_by_dates(project['account_id'], project['resource_id'])
         if x['su_used']:
-            amt = 1
+            amt = x['su_used']
         else:
             amt = 0
         if amt == 0 and options.zero_projects:
@@ -408,7 +408,7 @@ def show_project(project):
         ux = "Usage Period: {}{}\n Usage={} {}".format(
             "{}/".format(s) if s else "thru ",
             "{}".format(e) if e else today,
-            util.fmt_amount(amt, options.no_commas),
+            util.fmt_amount(float(amt), options.no_commas),
             x)
     else:
         alloc = get_allocation(project['account_id'], project['resource_id'], options.previous_allocation)
@@ -466,7 +466,7 @@ def show_project(project):
             print(" portal={}".format(username), end='')
         if a1['acct_state'] != 'active':
             print(" status=inactive", end='')
-        print(" usage={} {}".format(util.fmt_amount(amt if amt else 0, options.no_commas), x))
+        print(" usage={} {}".format(util.fmt_amount(float(amt) if amt else 0, options.no_commas), x))
 
         for x in j:
             print("      job", end='')

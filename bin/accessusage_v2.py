@@ -502,7 +502,7 @@ def show_project(project):
             util.show_value("processors", x['processors'])
             util.show_value("queue", x['queue'])
             util.show_value("walltime", x['wall_time'])
-            util.show_amt("charge", x['charge'], options.no_commas)
+            util.show_amt("charge", float(x['charge']), options.no_commas)
             print("")
             if options.job_attributes:
                 job_id = x['job_id']
