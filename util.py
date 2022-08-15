@@ -361,7 +361,7 @@ def fmt_datetime(dt):
 
 def fmt_name(first_name, middle_name, last_name):
     # my($first_name, $middle_name, $last_name) = @_;
-    name = "{} {}".format(last_name, first_name)
+    name = "{}, {}".format(last_name, first_name)
     if middle_name:
         name += " {}".format(middle_name)
     return name
