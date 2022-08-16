@@ -537,9 +537,12 @@ def get_dates():
     local_edate2 = None
     local_date = options.start_date
     if local_date:
-        local_sdate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
+        try: 
+            local_sdate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
+        except:
+            pass
         if not local_sdate:
-            util.error(me, "{} -- not a valid date".format(local_date))
+            util.error(me, "{} -- not a valid date (please specify Y-m-d format)".format(local_date))
     if local_sdate and (local_sdate > local_today):
         util.error(me, "The start date (-s) can't be in the future.")
 
@@ -547,9 +550,12 @@ def get_dates():
     if local_date:
         if not local_sdate:
             util.error(me, "The end date option (-e) requires that a start date (-s) be specified.")
-        local_edate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
+        try:
+            local_edate = datetime.datetime.strptime(local_date, '%Y-%m-%d')
+        except:
+             pass
         if not local_edate:
-            util.error(me, "{} -- not a valid date".format(local_date))
+            util.error(me, "{} -- not a valid date (please specify Y-m-d format)".format(local_date))
         local_edate2 = local_edate + datetime.timedelta(days=1)
 
     if local_sdate:
@@ -797,9 +803,11 @@ def main(wrapper_options, wrapper_config):
     global DEBUG
     global rest_url
 
+    # me
+    me = __file__
 
     # re-run this as sudo to access credentials
-    logname = util.check_and_run_sudo(__file__)
+    logname = util.check_and_run_sudo(me)
 
     # get argument list
     options = wrapper_options
