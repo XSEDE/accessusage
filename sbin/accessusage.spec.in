@@ -46,7 +46,7 @@ DESTDIR=%{buildroot}/usr/local/accessusage-%VER%-%REL%
 mkdir -p ${DESTDIR}
 mkdir -p ${DESTDIR}/bin
 mkdir -p ${DESTDIR}/docs
-mkdir -p ${DESTDIR}/man
+mkdir -p ${DESTDIR}/man/man1
 mkdir -p ${DESTDIR}/etc
 mkdir -p ${DESTDIR}/sbin
 cp -p bin/accessusage* ${DESTDIR}/bin/
@@ -56,7 +56,7 @@ cp -p LICENSE.txt ${DESTDIR}/docs/
 cp -p NOTICE ${DESTDIR}/docs/
 cp -p docs/INSTALL ${DESTDIR}/docs/
 cp -p docs/INSTALL_Testing ${DESTDIR}/docs/
-cp -p man/accessusage.1 ${DESTDIR}/man/
+cp -p man/man1/accessusage.1 ${DESTDIR}/man/man1/
 cp -p etc/accessusage_v1.conf.example ${DESTDIR}/etc/
 cp -p etc/accessusage_v2.conf.example ${DESTDIR}/etc/
 cp -p etc/accessusage.modules.example ${DESTDIR}/etc/
@@ -66,7 +66,7 @@ cp -p etc/accessusage.sudoers.example ${DESTDIR}/etc/
 %attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/bin/accessusage*
 %attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/bin/util.py
 %attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/docs/*
-%attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/man/*
+%attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/man/man1/*
 %attr(0640, root   , accessusage) /usr/local/accessusage-%VER%-%REL%/etc/accessusage_v1.conf.example
 %attr(0640, root   , accessusage) /usr/local/accessusage-%VER%-%REL%/etc/accessusage_v2.conf.example
 %attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/etc/accessusage.modules.example

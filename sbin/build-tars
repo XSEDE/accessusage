@@ -25,7 +25,7 @@ mkdir -p $TARPATH || exit 1
 mkdir $TARPATH/bin
 mkdir $TARPATH/etc
 mkdir $TARPATH/docs
-mkdir $TARPATH/man
+mkdir -p $TARPATH/man/man1
 mkdir $TARPATH/sbin
 
 cp -p VERSION RELEASE $TARPATH/
