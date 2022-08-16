@@ -177,7 +177,7 @@ if options.apiversion is None:
       options.apiversion = "1"
 
 if options.version:
-    print("accessusage version {}, api version {}".format('1.0', options.apiversion))
+    print("accessusage version {}, api version {}".format('%VER%', options.apiversion))
     exit(1)
 
 try:
