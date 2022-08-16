@@ -1,0 +1,220 @@
+.TH accessusage 1  "August 2022" "version %VER%" "ACCESS Usage Command"
+.SH NAME
+accessusage- displays usage information for ACCESS projects
+.SH SYNOPSIS
+.B accessusage
+[
+.BI -av " [1|2]"
+[
+.BI -p " project"
+] [
+.BI -r " resource"
+] [
+.BI -u " username|Lastname"
+] 
+.if n .ti +0.8i
+[
+.BI -up " portal-user"
+] [
+.BI -a
+] [
+.BI -j
+] [
+.BI -ja
+] [
+.BI -pa
+] 
+.if n .ti +0.8i
+.if t .ti +0.8i
+[
+.BI -ip
+] [
+.BI -ia
+] [
+.BI -zp
+] [
+.BI -za
+] 
+] [
+.BI -nc
+] 
+.if n .ti +0.8i
+.if t .ti +0.8i
+[
+.BI -s " start-date"
+] [
+.BI -e " end-date"
+] [
+.B -V
+] [
+.B -h
+] 
+
+.SH DESCRIPTION
+.I accessusage
+displays project and user account usage information for ACCESS projects.
+Information includes the usage, allocation, status, and dates of projects,
+as well as user account usage and status and,
+optionally, job-level information.  Note, this command-line tool replaces
+the xdusage command from XSEDE.
+.PP
+.I accessusage
+with no options displays summary project and account usage information for the current user.
+By default, only unexpired projects are reported.
+
+.SH OPTIONS
+.TP 
+.BI -av " [1|2]"
+Specify accounting API version.  Default is version 2 (if api version 2 is not production yet, will fallback to version 1)
+.TP
+.BI -p " project"
+display usage for the project(s) specified.
+See PROJECTS below.
+.TP
+.BI -r " resource"
+Limit the output to allocations on the resource(s) specified.
+See ALLOCATIONS below.
+.TP
+.BI -u " username|Lastname"
+Limit the output to usage for the user(s) specified (either by their username on the local machine or by their last name).
+See USERS below.
+.TP
+.BI -up " portal-user"
+Limit the output to usage for the user(s) specified by their portal login.
+See USERS below.
+.TP
+.B -a
+display usage for all user accounts. (This option is ignored with -u and -up)
+.TP
+.B -j 
+display job data (as well as refunds, etc).
+.TP
+.B -ja
+show additional job attributes. (This option is ignored unless -j is specified)
+.TP
+.B -pa 
+show previous allocation. (This option is ignored with -s and -e)
+See ALLOCATIONS below.
+.TP
+.B -ip 
+suppress inactive projects.
+.TP
+.B -ia
+suppress inactive accounts.
+.TP
+.B -zp
+suppress projects with zero usage.
+.TP
+.B -za
+suppress user accounts with zero usage.
+.TP
+.B -nc
+do not use commas in the reported usage values.
+.TP
+.BI -s " start-date"
+.TP
+.BI -e " end-date"
+display usage for the period from
+.I start-date
+through
+.I end-date.
+If
+.B -e
+is specified, 
+.B -s
+must also be specfied.
+If 
+.B -s
+is specified, but
+.B -e
+is not specified, today is used for 
+.B -e.
+Format of date is YYYY-mm-dd (e.g., 2022-08-16).
+.TP
+.B -V
+display version information.
+.TP
+.B -h
+display brief help on command usage.
+
+.SH PROJECTS
+Projects, specified by
+.BR -p ,
+are of the form XXXXXXXXX (e.g., IRI160007)
+If
+.B -p
+is not specified, only those projects with non-expired allocations are reported.
+If
+.B -p
+is specified, then the latest allocation for those projects are reported (unless
+.B -pa
+is specified, and then the allocation just prior to the latest is reported). 
+
+Mutiple projects can be specified by separating them with spaces:
+
+.IP
+accessusage -p XXXXXXX YYYYYYY ZZZZZZZZ
+
+.PP
+NOTE: only projects that you have an account on will be reported. 
+If you specify a project you are not on, accessusage will not show it.
+
+.SH ALLOCATIONS
+Projects have allocations on one or more resources.
+There may be more than one allocation for a given project on a given resource.
+accessusage will show the latest allocation for each resource on a project, unless the
+.B -pa
+option is specfied, then the allocation previous to the latest will be show. 
+.PP
+If you wish to only see allocations on specific resources, use the 
+.B -r
+option:
+.IP
+accessusage -r forge.ncsa.teragrid
+.PP
+The resource name may be abbreviated
+.IP
+accessusage -r forge
+.PP
+Allocations may be inactive, either because they have expired or are out of funds.
+If the
+.B -p
+option is not specified, then only allocations which are not expired will be shown (even if they are inactive)
+If
+.B -p
+is used, then the latest allocations will be shown (even if they are expired or inactive)
+.PP
+If you wish to only see active allocations, use the
+.B -ip
+option.
+
+.SH USERS
+By default, accessusage will only show your account usage.
+If you want to see usage for all users on the projects, specify the
+.B -a
+option. If you want to only see usage for a specific user, specify the
+.B -u
+or
+.B -up
+options. 
+The
+.B -u
+option requires either the username on the system you are running accessusage from, or the user's last name
+(capitalized first letter). 
+Alternatively, if you know the portal username for a user, you can use the
+.B -up
+option.
+Mutiple users can be specified by separating the names with spaces:
+
+.IP
+accessusage -u squinn Shapiro -u Jones -up cpond
+
+.PP
+A percent sign (%) can be used as a wildcard:
+
+.IP
+accessusage -u S%
+
+.SH AUTHOR
+Choonhan Youn, Shava Smallen (accessusage authors), Michael Shapiro (xdusage author)
+
