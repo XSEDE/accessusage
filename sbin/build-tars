@@ -25,11 +25,12 @@ mkdir -p $TARPATH || exit 1
 mkdir $TARPATH/bin
 mkdir $TARPATH/etc
 mkdir $TARPATH/docs
+mkdir $TARPATH/man
 mkdir $TARPATH/sbin
 
 cp -p VERSION RELEASE $TARPATH/
 
-FILES=$(find bin etc docs -type f ! -path \*\.svn\*)
+FILES=$(find bin etc docs man -type f ! -path \*\.svn\*)
 FILES="$FILES sbin/$PKG.spec.in sbin/build-rpms README.md LICENSE.txt NOTICE"
 for i in $FILES;do
   iout=$(echo $i | sed 's/\.in$//')
