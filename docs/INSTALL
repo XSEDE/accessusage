@@ -48,7 +48,7 @@ R2) Install accessusage
    To install to a different location, say “/soft/accessusage-%VER%-%REL%”, use these commands:
    # yum install yum-downloadonly
    # yum update accessusage -y --downloadonly --downloaddir=./
-   # rpm -i --prefix=<INSTALL_DIR> ./accessusage-%VER%%REL%-1.noarch.rpm
+   # rpm -i --prefix=<INSTALL_DIR> ./accessusage-%VER%-%REL%-1.noarch.rpm
 
 
 R3) Edit /etc/sudoers to grant permission for everyone to run accessusage as the non_root user "accessusage" (created when the rpm was installed).
@@ -63,15 +63,15 @@ R4) Create the accessusage_v1.conf (legacy XDCDB database) and accessusage_v2.co
     MIGRATING FROM XDUSAGE: If you have an existing xdusage.conf file, you can copy it over to /etc/accessusage_v1.conf.  
     The /etc/accessusage_v2.conf can then be created by 
         a) copying the <INSTALL_DIR>/etc/accessusage_v2.conf.example to /etc/accessusage_v2.conf
-        b) Submit a ticket to explictly request your XDCDB key over to ACDB.  I.e.,
+        b) Submit a ticket to explictly request your XDCDB key be copied to ACDB.  If you are installing this prior to 
+           September 1, 2022, please email help@xsede.org.  Otherwise go to https://access-ci.org and submit a ticket via their 
+           form.  Suggested ticket content below: 
 
            Subject: ACDB API-KEY copy request
    
-           Please copy the following HASH for agent xdusage on resource <RESOURCE NAME>
-   
-           <key hash>
-   
-           on server https://allocations-api.access-ci.org/acdb/
+           Please copy the XDCDB agent xdusage key hash for resource <RESOURCE NAME> to 
+           https://allocations-api.access-ci.org/acdb/.
+
         c) Copy your api_id, api_key, and resource values from /etc/accessusage_v1.conf to /etc/accessusage_v2.conf
         d) Verify root ownership and 'accessusage' group permissions on both /etc/accessusage_v1.conf to /etc/accessusage_v2.conf.
            Permissions on both files should be 640.  E.g.,
@@ -124,12 +124,21 @@ R6) Change to <INSTALL_DIR> and run:
 
     # ./bin/accessusage
 
-    Output should look something like:
+    If there are config errors, running the script as root will help you identify where they are.  For example
 
-    As an administrator, you will be given directions to set up accessusage to run on this machine, if needed.
+    "Unable to find the 'api_id' value. 
+The configuration file (accessusage_v2.conf) should have one entry for each of the following:
+	api_key
+	api_id
+	resource_name
+	rest_url_base"
+
+    Otherwise, the output should look something like:
+
+    "As an administrator, you will be given directions to set up accessusage to run on this machine, if needed.
     Where possible, you will also be given instructions to correct any errors that are detected.
 
-    /opt/accessusage/bin/accessusage_v1.py: No projects and/or accounts found
+    /opt/accessusage/bin/accessusage_v1.py: No projects and/or accounts found"
 
     This means there are no config errors and you can proceed with user testing.  
     Look at the docs/INSTALL_Testing document for a few test commands run.
