@@ -55,7 +55,7 @@ def parse_args():
     list_of_choices = ["1", "2"]
     aparse.add_argument("-av", "--apiversion", help="Specify the specific version of accessusage. The default version is 2", choices=list_of_choices)
     aparse.add_argument(
-        "-p", "--projects", nargs='*', help="<project>", type=str,
+        "-p", "--projects", nargs='+', help="<project>", type=str,
         required=False)
     aparse.add_argument(
         "-r", "--resources", nargs='*', help="<resource>", type=str,
