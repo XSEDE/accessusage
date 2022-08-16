@@ -12,7 +12,7 @@ REL=$(cat RELEASE)
 
 DEFAULT_FILE_PERMS="664"
 DEFAULT_DIR_PERMS="775"
-REPO_HOSTNAME=software.xsede.org
+REPO_HOSTNAME=xsedesig@software.xsede.org
 REPO_SOFTWARE=/home/xsedesig/incoming/
 DEV_PKG_BASE=/local/software.xsede.org/development/$PKG
 DEV_RPM_BASE=/local/software.xsede.org/development/repo
@@ -47,7 +47,8 @@ ssh $REPO_HOSTNAME "mkdir -m $DEFAULT_DIR_PERMS $DEV_PKG_BASE/$PKG_SUBDIR"
 
 cd $PACKAGES
 chmod $DEFAULT_FILE_PERMS *.tgz *.tgz.sig
-scp -p *.tgz GETTING_STARTED.md $REPO_HOSTNAME:$DEV_PKG_BASE/$PKG_SUBDIR/
+scp -p *.tgz  INSTALL $REPO_HOSTNAME:$DEV_PKG_BASE/$PKG_SUBDIR/
+scp -p *.tgz  INSTALL_Testing  $REPO_HOSTNAME:$DEV_PKG_BASE/$PKG_SUBDIR/
 cd $HERE
 
 ssh $REPO_HOSTNAME "cd $DEV_PKG_BASE; rm -f latest; ln -s $PKG_SUBDIR latest"
