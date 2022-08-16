@@ -53,6 +53,9 @@ cp -p bin/util.py ${DESTDIR}/bin/
 cp -p README.md ${DESTDIR}/docs/
 cp -p LICENSE.txt ${DESTDIR}/docs/
 cp -p NOTICE ${DESTDIR}/docs/
+cp -p docs/INSTALL ${DESTDIR}/docs/
+cp -p docs/INSTALL_Testing ${DESTDIR}/docs/
+cp -p docs/accessusage.1 ${DESTDIR}/docs/
 cp -p etc/accessusage_v1.conf.example ${DESTDIR}/etc/
 cp -p etc/accessusage_v2.conf.example ${DESTDIR}/etc/
 cp -p etc/accessusage.modules.example ${DESTDIR}/etc/
@@ -61,6 +64,7 @@ cp -p etc/accessusage.sudoers.example ${DESTDIR}/etc/
 %files
 %attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/bin/accessusage*
 %attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/bin/util.py
+%attr(0755, root   , root   ) /usr/local/accessusage-%VER%-%REL%/docs/*
 %attr(0640, root   , accessusage) /usr/local/accessusage-%VER%-%REL%/etc/accessusage_v1.conf.example
 %attr(0640, root   , accessusage) /usr/local/accessusage-%VER%-%REL%/etc/accessusage_v2.conf.example
 %attr(0644, root   , root   ) /usr/local/accessusage-%VER%-%REL%/etc/accessusage.modules.example
