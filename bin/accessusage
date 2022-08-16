@@ -61,11 +61,11 @@ def parse_args():
         "-r", "--resources", nargs='*', help="<resource>", type=str,
         required=False)
     aparse.add_argument(
-        "-u", "--usernames", nargs='*',
+        "-u", "--usernames", nargs='+',
         help="<username|Last name>",
         type=str)
     aparse.add_argument(
-        "-up", "--portal_usernames", nargs='*',
+        "-up", "--portal_usernames", nargs='+',
         help="<portal-username>",
         type=str)
     aparse.add_argument(
