@@ -120,7 +120,19 @@ R5) Install an accessusage modules file to make it easier for users to access it
     (or a Module directory of your choosing) and mark the default by specifying %VER%-%REL% in the
     associated /usr/local/Modules/modulefiles/accessusage/.version file.
 
-R6) Look at the docs/INSTALL_Testing document for a sanity-check command line to run.
+R6) Change to <INSTALL_DIR> and run:
+
+    # ./bin/accessusage
+
+    Output should look something like:
+
+    As an administrator, you will be given directions to set up accessusage to run on this machine, if needed.
+    Where possible, you will also be given instructions to correct any errors that are detected.
+
+    /opt/accessusage/bin/accessusage_v1.py: No projects and/or accounts found
+
+    This means there are no config errors and you can proceed with user testing.  
+    Look at the docs/INSTALL_Testing document for a few test commands run.
 
 
 **********************
