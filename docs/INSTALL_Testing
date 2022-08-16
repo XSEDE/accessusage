@@ -15,7 +15,7 @@ Steps:
    # verify manpage is displayed
    $ man accessusage
 
-   $ ./accessusage
+   $ accessusage
 
 Results:
 * the output should look like the following:
@@ -33,12 +33,12 @@ Notes:
 * If the project is active, no "status=" will appear
 
    # verify api version.
-   $ ./accessusage -V
+   $ accessusage -V
 
    # if output has "api version 1", please test the api version 2 specifically
    # by running the below command.  Output should match similarly to above but usage
    # numbers will differ since the newer database doesn't have new data yet.
-   $ ./accessusage -av 2 
+   $ accessusage -av 2 
 
 
 
@@ -52,7 +52,7 @@ Prerequisites:
 
 Steps:
   # verify you can emulate another user on this machine as an admin account
-  $ env USER=<username> ./accessusage 
+  $ env USER=<username> accessusage 
 
 Results:
 * Output will be as in test 1 above, but with usage information for the user specified by $USER instead of the user performing the test
