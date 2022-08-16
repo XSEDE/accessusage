@@ -52,7 +52,7 @@ R2) Install accessusage
 
 
 R3) Edit /etc/sudoers to grant permission for everyone to run accessusage as the non_root user "accessusage" (created when the rpm was installed).
-    This can be done by adding these lines:
+    This can be done by adding these lines (can copy specific lines from <INSTALL_DIR>/etc/accessusage.sudoers.example):
 
       Defaults!<INSTALL_DIR>/bin/accessusage env_keep="USER"
       Defaults!<INSTALL_DIR>/bin/accessusage runas_default=accessusage
@@ -73,6 +73,13 @@ R4) Create the accessusage_v1.conf (legacy XDCDB database) and accessusage_v2.co
    
            on server https://allocations-api.access-ci.org/acdb/
         c) Copy your api_id, api_key, and resource values from /etc/accessusage_v1.conf to /etc/accessusage_v2.conf
+        d) Verify root ownership and 'accessusage' group permissions on both /etc/accessusage_v1.conf to /etc/accessusage_v2.conf.
+           Permissions on both files should be 640.  E.g.,
+
+           # ls -l /etc/accessusage*conf
+           -rw-r-----. 1 root accessusage 849 Aug 15 19:47 /etc/accessusage_v1.conf
+           -rw-r-----. 1 root accessusage 967 Aug 15 19:48 /etc/accessusage_v2.conf
+
  
     
     OTHERWISE: The following steps will need to be generate the /etc/accessusage_v2.conf file 
