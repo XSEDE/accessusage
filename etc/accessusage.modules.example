@@ -29,6 +29,6 @@ proc ModulesHelp { } {
       remove-path    PATH   INSTALL_DIR/bin/
       prepend-path   PATH   INSTALL_DIR/bin/
 
-      remove-path    MANPATH   INSTALL_DIR/man/man1/
-      prepend-path   MANPATH   INSTALL_DIR/man/man1/
+      remove-path    MANPATH   INSTALL_DIR/man/
+      prepend-path   MANPATH   INSTALL_DIR/man/
 
