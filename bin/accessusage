@@ -164,7 +164,12 @@ def parse_args():
 
 options = parse_args()
 
+# check user exists
 util.check_user()
+
+# re-run this as sudo to access credentials
+logname = util.check_and_run_sudo(__file__)
+
 install_dir = os.path.dirname(os.path.abspath(__file__))
 config = util.get_config(options, "accessusage_v2.conf", install_dir)
 if options.apiversion is None:
@@ -183,8 +188,8 @@ if options.version:
 try:
     if options.apiversion == '1':
         config = util.get_config(options, "accessusage_v1.conf", install_dir)
-        accessusage_v1.main(options, config)
+        accessusage_v1.main(options, config, logname)
     elif options.apiversion == '2':
-        accessusage_v2.main(options, config)
+        accessusage_v2.main(options, config, logname)
 except KeyboardInterrupt:
     pass
