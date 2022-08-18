@@ -60,8 +60,9 @@ def check_sudo(install_dir):
         sys.stderr.write("The /etc/sudoers file is not set up correctly.\n")
         if is_root:
             msg = "The /etc/sudoers file needs to contain the following lines in order for non-root users to run " \
-                  "correctly:\t\nDefault!{}/accessusage runas_default=accessusage\t\nDefault!{}/accessusage " \
-                  "env_keep=\"USER\"\t\nALL  ALL=(accessusage) NOPASSWD:{}/accessusage\n".format(install_dir, install_dir,
+                  "correctly:\t\nDefaults!{}/accessusage env_keep=\"USER\"\t\n" \
+                  "Defaults!{}/accessusage runas_default=accessusage\t\n" \
+                  "ALL  ALL=(accessusage) NOPASSWD:{}/accessusage\n".format(install_dir, install_dir,
                                                                                      install_dir)
             sys.stderr.write(msg)
             sys.exit()
