@@ -106,15 +106,6 @@ def error(me, msg):
 
 
 def get_config(options, accessusage_config_file, install_dir):
-    global is_root
-
-    # Determine if the script is being run by root.
-    # Root will be given setup instructions, if necessary, and
-    # will be given directions to correct errors, where possible.
-    # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
-    is_root = (pwd.getpwuid(os.getuid())[0] == "root")
-    # print('is root = {}'.format(is_root))
-
     config = { 
         "conf_file": None,
         "api_key": None,
@@ -261,6 +252,13 @@ def check_config(options, config, command_line, resources_func):
 
 def check_and_run_sudo(exec_script):
     global is_root
+
+    # Determine if the script is being run by root.
+    # Root will be given setup instructions, if necessary, and
+    # will be given directions to correct errors, where possible.
+    # print('os uid = {} {}'.format(os.getuid(), pwd.getpwuid(os.getuid())[0]))
+    is_root = (pwd.getpwuid(os.getuid())[0] == "root")
+    # print('is root = {}'.format(is_root))
 
     # find out where this script is running from
     # eliminates the need to configure an install dir
@@ -427,13 +425,13 @@ def is_authorized(options, config, command_line):
                       "configuration file ({}). \nIf you still have the HASH that was generated with this key \nyou " \
                       "can use it to register accessusage with the API. \nOtherwise, you will need to enter the new " \
                       "API_KEY into the configuration file. \nIn either case, send the following e-mail to " \
-                      "help@xsede.org to register with the hash and key. \nSubject: XDCDB API-KEY installation " \
+                      "help@xsede.org to register with the hash and key. \nSubject: ACDB API-KEY installation " \
                       "request \nPlease install the following HASH for agent xdusage on resource '{}'. \n<Replace " \
                       "this with the HASH you are using>\n".format(config["conf_file"], config["api_id"])
             sys.stderr.write(message)
         else:
             sys.stderr.write(
-                "xdusage is not authorized to query the XDCDB-API.\nPlease contact your system administrator.\n")
+                "accessusage is not authorized to query the XDCDB-API.\nPlease contact your system administrator.\n")
 
         # Show full error message in case it is something other than authorization.
         if resp is not None:

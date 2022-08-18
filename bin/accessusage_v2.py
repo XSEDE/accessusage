@@ -787,7 +787,7 @@ def get_projects():
 
 
 
-def main(wrapper_options, wrapper_config):
+def main(wrapper_options, wrapper_config, logname):
     global options
     global config 
     global command_line
@@ -805,9 +805,6 @@ def main(wrapper_options, wrapper_config):
 
     # me
     me = __file__
-
-    # re-run this as sudo to access credentials
-    logname = util.check_and_run_sudo(me)
 
     # get argument list
     options = wrapper_options
